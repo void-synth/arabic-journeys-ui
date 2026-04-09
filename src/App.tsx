@@ -15,7 +15,7 @@ import TeacherSessions from "./pages/teacher/TeacherSessions";
 import SessionForm from "./pages/teacher/SessionForm";
 import SessionDetail from "./pages/teacher/SessionDetail";
 import TeacherStudents from "./pages/teacher/TeacherStudents";
-import StudentForm from "./pages/teacher/StudentForm";
+import AdminStudentForm from "./pages/admin/AdminStudentForm";
 import StudentProfile from "./pages/teacher/StudentProfile";
 import TeacherAttendance from "./pages/teacher/TeacherAttendance";
 import TeacherNotifications from "./pages/teacher/TeacherNotifications";
@@ -62,9 +62,7 @@ const App = () => (
           <Route path="/teacher/sessions/:id" element={<SessionDetail />} />
           <Route path="/teacher/sessions/:id/edit" element={<SessionForm />} />
           <Route path="/teacher/students" element={<TeacherStudents />} />
-          <Route path="/teacher/students/add" element={<StudentForm />} />
           <Route path="/teacher/students/:id" element={<StudentProfile />} />
-          <Route path="/teacher/students/:id/edit" element={<StudentForm />} />
           <Route path="/teacher/attendance" element={<TeacherAttendance />} />
           <Route path="/teacher/notifications" element={<TeacherNotifications />} />
           <Route path="/teacher/settings" element={<TeacherSettings />} />
@@ -80,6 +78,8 @@ const App = () => (
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/admin/teachers" element={<AdminTeachers />} />
           <Route path="/admin/students" element={<AdminStudents />} />
+          <Route path="/admin/students/new" element={<AdminStudentForm />} />
+          <Route path="/admin/students/:id/edit" element={<AdminStudentForm />} />
           <Route path="/admin/sessions" element={<AdminSessions />} />
           <Route path="/admin/analytics" element={<AdminAnalytics />} />
           <Route path="/admin/settings" element={<AdminSettings />} />

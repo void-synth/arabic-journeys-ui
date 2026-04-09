@@ -10,9 +10,9 @@ const monthlyData = [
 ];
 
 const statusData = [
-  { name: "Completed", value: 45, color: "hsl(152, 60%, 42%)" },
-  { name: "Upcoming", value: 20, color: "hsl(210, 80%, 55%)" },
-  { name: "Cancelled", value: 5, color: "hsl(0, 72%, 55%)" },
+  { name: "Completed", value: 45, color: "hsl(152, 55%, 36%)" },
+  { name: "Upcoming", value: 20, color: "hsl(215, 75%, 48%)" },
+  { name: "Cancelled", value: 5, color: "hsl(0, 72%, 48%)" },
 ];
 
 const attendanceData = [
@@ -22,49 +22,69 @@ const attendanceData = [
   { week: "W4", rate: 92 },
 ];
 
+const axisColor = "hsl(220, 12%, 42%)";
+const gridColor = "hsl(220, 16%, 88%)";
+const tooltipStyle = {
+  borderRadius: 12,
+  border: "1px solid hsl(220 16% 88%)",
+  background: "hsl(0 0% 100% / 0.96)",
+  color: "hsl(220 20% 18%)",
+  boxShadow: "0 12px 40px hsl(220 25% 20% / 0.12)",
+};
+
 export default function AdminAnalytics() {
   return (
     <AdminLayout title="Analytics">
       <div className="page-container">
-        <PageHeader title="Analytics" description="Platform performance and insights" />
+        <PageHeader
+          title="Analytics"
+          description="Organization-wide trends. Teachers only see analytics for their own teaching; this page is for admins."
+        />
         <div className="grid lg:grid-cols-2 gap-6">
-          <div className="bg-card rounded-xl border border-border p-5">
-            <h3 className="font-semibold text-foreground mb-4">Monthly Sessions & Students</h3>
-            <ResponsiveContainer width="100%" height={250}>
+          <div className="glass-card rounded-[var(--radius-lg)] p-5 md:p-6">
+            <h3 className="font-display font-semibold text-lg text-foreground mb-4">Monthly sessions & students</h3>
+            <ResponsiveContainer width="100%" height={260}>
               <BarChart data={monthlyData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(214, 20%, 90%)" />
-                <XAxis dataKey="month" tick={{ fontSize: 12 }} />
-                <YAxis tick={{ fontSize: 12 }} />
-                <Tooltip />
-                <Bar dataKey="sessions" fill="hsl(168, 60%, 38%)" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="students" fill="hsl(35, 90%, 55%)" radius={[4, 4, 0, 0]} />
+                <CartesianGrid strokeDasharray="3 3" stroke={gridColor} vertical={false} />
+                <XAxis dataKey="month" tick={{ fontSize: 12, fill: axisColor }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fontSize: 12, fill: axisColor }} axisLine={false} tickLine={false} />
+                <Tooltip contentStyle={tooltipStyle} />
+                <Bar dataKey="sessions" fill="hsl(160, 62%, 48%)" radius={[6, 6, 0, 0]} name="Sessions" />
+                <Bar dataKey="students" fill="hsl(38, 96%, 54%)" radius={[6, 6, 0, 0]} name="Students" />
               </BarChart>
             </ResponsiveContainer>
           </div>
 
-          <div className="bg-card rounded-xl border border-border p-5">
-            <h3 className="font-semibold text-foreground mb-4">Session Status</h3>
-            <ResponsiveContainer width="100%" height={250}>
+          <div className="glass-card rounded-[var(--radius-lg)] p-5 md:p-6">
+            <h3 className="font-display font-semibold text-lg text-foreground mb-4">Session status mix</h3>
+            <ResponsiveContainer width="100%" height={260}>
               <PieChart>
-                <Pie data={statusData} cx="50%" cy="50%" outerRadius={90} dataKey="value" label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}>
+                <Pie
+                  data={statusData}
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={88}
+                  dataKey="value"
+                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                >
                   {statusData.map((entry, i) => (
                     <Cell key={i} fill={entry.color} />
                   ))}
                 </Pie>
-                <Tooltip />
+                <Tooltip contentStyle={tooltipStyle} />
               </PieChart>
             </ResponsiveContainer>
           </div>
 
-          <div className="bg-card rounded-xl border border-border p-5 lg:col-span-2">
-            <h3 className="font-semibold text-foreground mb-4">Attendance Rate (%)</h3>
-            <ResponsiveContainer width="100%" height={250}>
+          <div className="glass-card rounded-[var(--radius-lg)] p-5 md:p-6 lg:col-span-2">
+            <h3 className="font-display font-semibold text-lg text-foreground mb-4">Attendance rate (%)</h3>
+            <ResponsiveContainer width="100%" height={260}>
               <LineChart data={attendanceData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(214, 20%, 90%)" />
-                <XAxis dataKey="week" tick={{ fontSize: 12 }} />
-                <YAxis tick={{ fontSize: 12 }} />
-                <Tooltip />
-                <Line type="monotone" dataKey="rate" stroke="hsl(168, 60%, 38%)" strokeWidth={2} dot={{ fill: "hsl(168, 60%, 38%)" }} />
+                <CartesianGrid strokeDasharray="3 3" stroke={gridColor} vertical={false} />
+                <XAxis dataKey="week" tick={{ fontSize: 12, fill: axisColor }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fontSize: 12, fill: axisColor }} axisLine={false} tickLine={false}                 domain={[60, 100]} />
+                <Tooltip contentStyle={tooltipStyle} />
+                <Line type="monotone" dataKey="rate" stroke="hsl(160, 62%, 52%)" strokeWidth={2.5} dot={{ fill: "hsl(160, 62%, 52%)", r: 4 }} />
               </LineChart>
             </ResponsiveContainer>
           </div>

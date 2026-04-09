@@ -17,7 +17,7 @@ export default function SessionForm() {
     <TeacherLayout title={isEdit ? "Edit Session" : "Create Session"}>
       <div className="page-container max-w-2xl">
         <PageHeader title={isEdit ? "Edit Session" : "Create New Session"} description={isEdit ? "Update session details" : "Fill in the details for your new session"} />
-        <div className="bg-card rounded-xl border border-border p-6 space-y-5">
+        <div className="surface-panel p-6 sm:p-8 space-y-5">
           <div className="grid sm:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label>Title</Label>

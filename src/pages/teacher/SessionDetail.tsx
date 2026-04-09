@@ -38,7 +38,7 @@ export default function SessionDetail() {
         />
         <div className="grid lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
-            <div className="bg-card rounded-xl border border-border p-5">
+            <div className="glass-card rounded-[var(--radius-lg)] p-5 md:p-6">
               <div className="flex flex-wrap gap-4 text-sm">
                 <div className="flex items-center gap-2 text-muted-foreground"><Calendar className="h-4 w-4" />{session.date}</div>
                 <div className="flex items-center gap-2 text-muted-foreground"><Clock className="h-4 w-4" />{session.time} · {session.duration}min</div>
@@ -55,8 +55,8 @@ export default function SessionDetail() {
             </div>
 
             {/* Attendance */}
-            <div className="bg-card rounded-xl border border-border p-5">
-              <h3 className="font-semibold text-foreground mb-4">Attendance</h3>
+            <div className="surface-panel p-5 md:p-6">
+              <h3 className="font-display font-semibold text-lg text-foreground mb-4">Attendance</h3>
               {sessionAttendance.length === 0 ? (
                 <p className="text-sm text-muted-foreground">No attendance records yet.</p>
               ) : (
@@ -72,8 +72,8 @@ export default function SessionDetail() {
             </div>
           </div>
 
-          <div className="bg-card rounded-xl border border-border p-5 h-fit">
-            <h3 className="font-semibold text-foreground mb-4">Enrolled Students</h3>
+          <div className="glass-card rounded-[var(--radius-lg)] p-5 md:p-6 h-fit">
+            <h3 className="font-display font-semibold text-lg text-foreground mb-4">Enrolled students</h3>
             <div className="space-y-2">
               {sessionStudents.map((s) => (
                 <Link key={s.id} to={`/teacher/students/${s.id}`} className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted/50 transition-colors">

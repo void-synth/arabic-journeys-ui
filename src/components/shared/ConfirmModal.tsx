@@ -22,7 +22,7 @@ interface ConfirmModalProps {
 export function ConfirmModal({ open, onClose, onConfirm, title, description, confirmText = "Confirm", destructive }: ConfirmModalProps) {
   return (
     <AlertDialog open={open} onOpenChange={onClose}>
-      <AlertDialogContent className="glass-modal">
+      <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>{title}</AlertDialogTitle>
           <AlertDialogDescription>{description}</AlertDialogDescription>

@@ -6,27 +6,33 @@ import { Label } from "@/components/ui/label";
 
 export default function ResetPasswordPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background px-4">
-      <div className="w-full max-w-sm">
-        <div className="text-center mb-8">
-          <Link to="/" className="inline-flex items-center gap-2">
-            <BookOpen className="h-8 w-8 text-primary" />
-            <span className="text-2xl font-bold text-foreground">ArabicLearn</span>
+    <div className="min-h-screen flex items-center justify-center mesh-bg-public px-4 py-12">
+      <div className="w-full max-w-[420px]">
+        <div className="text-center mb-10">
+          <Link to="/" className="inline-flex items-center gap-2.5">
+            <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15">
+              <BookOpen className="h-6 w-6 text-primary" />
+            </span>
+            <span className="text-2xl font-semibold text-foreground font-display tracking-tight">ArabicLearn</span>
           </Link>
-          <p className="text-muted-foreground mt-2">Create a new password.</p>
+          <p className="text-muted-foreground mt-3 text-sm">Choose a new password (frontend mock).</p>
         </div>
-        <div className="glass-card rounded-xl p-6 space-y-4">
+        <div className="surface-panel p-6 sm:p-8 space-y-5">
           <div className="space-y-2">
-            <Label htmlFor="password">New Password</Label>
-            <Input id="password" type="password" placeholder="••••••••" />
+            <Label htmlFor="password">New password</Label>
+            <Input id="password" type="password" placeholder="••••••••" className="h-11" />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="confirm">Confirm Password</Label>
-            <Input id="confirm" type="password" placeholder="••••••••" />
+            <Label htmlFor="confirm">Confirm password</Label>
+            <Input id="confirm" type="password" placeholder="••••••••" className="h-11" />
           </div>
-          <Button className="w-full">Reset Password</Button>
+          <Button className="w-full h-11 font-semibold" type="button">
+            Reset password
+          </Button>
           <div className="text-center">
-            <Link to="/login" className="text-sm text-primary hover:underline">Back to login</Link>
+            <Link to="/login" className="text-sm font-medium text-primary hover:underline underline-offset-4">
+              Back to login
+            </Link>
           </div>
         </div>
       </div>

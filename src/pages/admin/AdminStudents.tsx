@@ -3,8 +3,10 @@ import { PageHeader } from "@/components/shared/PageHeader";
 import { DataTable } from "@/components/shared/DataTable";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { students } from "@/data/mock";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
+import { Plus, Search } from "lucide-react";
+import { Link } from "react-router-dom";
 import { useState } from "react";
 
 export default function AdminStudents() {
@@ -12,13 +14,24 @@ export default function AdminStudents() {
   const filtered = students.filter((s) => s.name.toLowerCase().includes(search.toLowerCase()));
 
   return (
-    <AdminLayout title="Students">
+    <AdminLayout title="Learners">
       <div className="page-container">
-        <PageHeader title="Manage Students" description="View all students on the platform" />
-        <div className="flex items-center gap-3 mb-4">
-          <div className="relative flex-1 max-w-sm">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input placeholder="Search students..." className="pl-9" value={search} onChange={(e) => setSearch(e.target.value)} />
+        <PageHeader
+          title="Learners"
+          description="Directory-wide list — teachers only see learners enrolled in their own sessions."
+          actions={
+            <Link to="/admin/students/new">
+              <Button>
+                <Plus className="mr-2 h-4 w-4" />
+                Add learner
+              </Button>
+            </Link>
+          }
+        />
+        <div className="mb-4 flex items-center gap-3">
+          <div className="relative max-w-sm flex-1">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Input placeholder="Search learners…" className="pl-9" value={search} onChange={(e) => setSearch(e.target.value)} />
           </div>
         </div>
         <DataTable

@@ -12,18 +12,18 @@ interface StatCardProps {
 
 export function StatCard({ title, value, icon: Icon, trend, trendUp, className }: StatCardProps) {
   return (
-    <div className={cn("stat-card glass-card rounded-xl", className)}>
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-sm text-muted-foreground font-medium">{title}</p>
-          <p className="text-2xl font-bold mt-1 text-foreground">{value}</p>
+    <div className={cn("glass-card rounded-[var(--radius-lg)] p-5 md:p-6", className)}>
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/90">{title}</p>
+          <p className="text-2xl md:text-3xl font-bold mt-1.5 text-foreground tabular-nums font-display">{value}</p>
           {trend && (
-            <p className={cn("text-xs mt-1 font-medium", trendUp ? "text-success" : "text-destructive")}>
+            <p className={cn("text-xs mt-2 font-medium", trendUp ? "text-emerald-700" : "text-rose-600")}>
               {trendUp ? "↑" : "↓"} {trend}
             </p>
           )}
         </div>
-        <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center">
+        <div className="stat-card-inner-icon shrink-0">
           <Icon className="h-6 w-6 text-primary" />
         </div>
       </div>

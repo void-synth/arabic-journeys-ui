@@ -11,8 +11,8 @@ export default function StudentSettings() {
       <div className="page-container max-w-2xl">
         <PageHeader title="Settings" description="Manage your profile" />
         <div className="space-y-6">
-          <div className="bg-card rounded-xl border border-border p-6 space-y-4">
-            <h3 className="font-semibold text-foreground">Profile</h3>
+          <div className="surface-panel p-6 sm:p-8 space-y-4">
+            <h3 className="font-display font-semibold text-lg text-foreground">Profile</h3>
             <div className="grid sm:grid-cols-2 gap-4">
               <div className="space-y-2"><Label>Name</Label><Input defaultValue={currentStudent.name} /></div>
               <div className="space-y-2"><Label>Email</Label><Input defaultValue={currentStudent.email} /></div>
@@ -20,8 +20,8 @@ export default function StudentSettings() {
             </div>
             <Button>Save</Button>
           </div>
-          <div className="bg-card rounded-xl border border-border p-6 space-y-4">
-            <h3 className="font-semibold text-foreground">Change Password</h3>
+          <div className="surface-panel p-6 sm:p-8 space-y-4">
+            <h3 className="font-display font-semibold text-lg text-foreground">Change password</h3>
             <div className="space-y-4 max-w-sm">
               <div className="space-y-2"><Label>Current Password</Label><Input type="password" /></div>
               <div className="space-y-2"><Label>New Password</Label><Input type="password" /></div>

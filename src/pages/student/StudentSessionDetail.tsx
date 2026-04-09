@@ -25,7 +25,7 @@ export default function StudentSessionDetail() {
     <StudentLayout title="Session Detail">
       <div className="page-container max-w-2xl">
         <PageHeader title={session.title} actions={<Link to="/student/sessions"><Button variant="ghost">Back</Button></Link>} />
-        <div className="bg-card rounded-xl border border-border p-6 space-y-4">
+        <div className="glass-card rounded-[var(--radius-lg)] p-6 md:p-8 space-y-4">
           <div className="flex flex-wrap gap-4 text-sm">
             <div className="flex items-center gap-2 text-muted-foreground"><Calendar className="h-4 w-4" />{session.date}</div>
             <div className="flex items-center gap-2 text-muted-foreground"><Clock className="h-4 w-4" />{session.time} · {session.duration}min</div>

@@ -14,30 +14,41 @@ export default function StudentDashboard() {
   return (
     <StudentLayout title="Dashboard">
       <div className="page-container">
-        <div className="grid sm:grid-cols-3 gap-4 mb-8">
-          <StatCard title="Total Sessions" value={mySessions.length} icon={Calendar} />
+        <div className="grid sm:grid-cols-3 gap-4 mb-10">
+          <StatCard title="Total sessions" value={mySessions.length} icon={Calendar} />
           <StatCard title="Upcoming" value={upcoming.length} icon={Clock} />
           <StatCard title="Completed" value={completed.length} icon={BookOpen} />
         </div>
 
-        <div className="bg-card rounded-xl border border-border p-5">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold text-foreground">Upcoming Sessions</h3>
-            <Link to="/student/sessions"><Button variant="ghost" size="sm">View all</Button></Link>
+        <div className="glass-card rounded-[var(--radius-lg)] p-5 md:p-6">
+          <div className="flex items-center justify-between mb-5">
+            <h3 className="font-display font-semibold text-lg text-foreground">Upcoming sessions</h3>
+            <Link to="/student/sessions">
+              <Button variant="ghost" size="sm">
+                View all
+              </Button>
+            </Link>
           </div>
-          <div className="space-y-3">
-            {upcoming.length === 0 && <p className="text-sm text-muted-foreground py-4 text-center">No upcoming sessions</p>}
+          <div className="space-y-1">
+            {upcoming.length === 0 && <p className="text-sm text-muted-foreground py-8 text-center">No upcoming sessions</p>}
             {upcoming.map((s) => (
-              <div key={s.id} className="flex items-center justify-between p-3 rounded-lg hover:bg-muted/50 transition-colors">
-                <Link to={`/student/sessions/${s.id}`} className="flex-1">
+              <div
+                key={s.id}
+                className="flex flex-col gap-3 rounded-xl p-3 transition-colors hover:bg-muted/60 sm:flex-row sm:items-center sm:justify-between"
+              >
+                <Link to={`/student/sessions/${s.id}`} className="flex-1 min-w-0">
                   <p className="font-medium text-foreground text-sm">{s.title}</p>
-                  <p className="text-xs text-muted-foreground">{s.teacherName} · {s.date} · {s.time}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    {s.teacherName} · {s.date} · {s.time}
+                  </p>
                 </Link>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 shrink-0">
                   <StatusBadge status={s.status} />
                   {s.meetingLink && (
                     <a href={s.meetingLink} target="_blank" rel="noreferrer">
-                      <Button size="sm">Join</Button>
+                      <Button size="sm" className="rounded-lg">
+                        Join
+                      </Button>
                     </a>
                   )}
                 </div>
