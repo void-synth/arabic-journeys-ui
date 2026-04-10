@@ -38,11 +38,14 @@ import NotFound from "./pages/NotFound";
 import ForbiddenPage from "./pages/ForbiddenPage";
 import OnboardingPage from "./pages/OnboardingPage";
 
+import { UnderConstructionGate } from "@/components/shared/UnderConstructionGate";
+
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
+    <UnderConstructionGate>
+      <TooltipProvider>
       <Toaster />
       <Sonner />
       <BrowserRouter>
@@ -88,6 +91,7 @@ const App = () => (
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
+    </UnderConstructionGate>
   </QueryClientProvider>
 );
 
