@@ -5,17 +5,21 @@ import { LandingProof } from "@/components/landing/LandingProof";
 import { LandingTestimonials } from "@/components/landing/LandingTestimonials";
 import { LandingCTA } from "@/components/landing/LandingCTA";
 import { LandingFooter } from "@/components/landing/LandingFooter";
+import { LandingBackdrop } from "@/components/visual/LandingBackdrop";
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-[hsl(42_28%_97%)] text-slate-800">
+    <div className="relative isolate min-h-screen overflow-hidden text-slate-800">
+      <LandingBackdrop />
       <LandingHeader />
-      <LandingHero />
-      <LandingFeatures />
-      <LandingProof />
-      <LandingTestimonials />
-      <LandingCTA />
-      <LandingFooter />
+      <div className="relative z-10">
+        <LandingHero />
+        <LandingFeatures />
+        <LandingProof />
+        <LandingTestimonials />
+        <LandingCTA />
+        <LandingFooter />
+      </div>
     </div>
   );
 }
