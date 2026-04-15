@@ -1,7 +1,7 @@
 import { StudentLayout } from "@/layouts/StudentLayout";
 import { StatCard } from "@/components/shared/StatCard";
 import { StatusBadge } from "@/components/shared/StatusBadge";
-import { sessions, currentStudent } from "@/data/mock";
+import { currentStudent } from "@/data/mock";
 import { Calendar, Clock, BookOpen } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -9,12 +9,16 @@ import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart";
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
+import { useStoredSessions } from "@/lib/useStoredSessions";
 
 export default function StudentDashboard() {
+  const sessions = useStoredSessions();
   const mySessions = sessions.filter((s) => s.students.includes(currentStudent.id));
   const upcoming = mySessions.filter((s) => s.status === "upcoming");
   const completed = mySessions.filter((s) => s.status === "completed");
   const cancelled = mySessions.filter((s) => s.status === "cancelled");
+  const completionRate = mySessions.length ? Math.round((completed.length / mySessions.length) * 100) : 0;
+  const nextSession = [...upcoming].sort((a, b) => `${a.date} ${a.time}`.localeCompare(`${b.date} ${b.time}`))[0];
   const learningFlowData = [
     { stage: "Upcoming", count: upcoming.length },
     { stage: "Completed", count: completed.length },
@@ -30,8 +34,28 @@ export default function StudentDashboard() {
         <div className="grid sm:grid-cols-3 gap-4 mb-10">
           <StatCard title="Total sessions" value={mySessions.length} icon={Calendar} />
           <StatCard title="Upcoming" value={upcoming.length} icon={Clock} />
-          <StatCard title="Completed" value={completed.length} icon={BookOpen} />
+          <StatCard title="Completed" value={completed.length} icon={BookOpen} trend={`${completionRate}% completion`} trendUp />
         </div>
+
+        <Card className="mb-6 border-white/55 bg-white/80 backdrop-blur-xl">
+          <CardContent className="p-4">
+            <p className="text-sm font-semibold text-foreground">Next session</p>
+            {nextSession ? (
+              <div className="mt-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                <p className="text-sm text-muted-foreground">
+                  {nextSession.title} with {nextSession.teacherName} · {nextSession.date} at {nextSession.time}
+                </p>
+                {nextSession.meetingLink ? (
+                  <a href={nextSession.meetingLink} target="_blank" rel="noreferrer">
+                    <Button size="sm">Join class</Button>
+                  </a>
+                ) : null}
+              </div>
+            ) : (
+              <p className="mt-2 text-sm text-muted-foreground">No upcoming class yet. Check back after scheduling updates.</p>
+            )}
+          </CardContent>
+        </Card>
 
         <div className="grid gap-6 lg:grid-cols-2">
           <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>

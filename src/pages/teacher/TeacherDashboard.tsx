@@ -1,7 +1,7 @@
 import { TeacherLayout } from "@/layouts/TeacherLayout";
 import { StatCard } from "@/components/shared/StatCard";
 import { StatusBadge } from "@/components/shared/StatusBadge";
-import { sessions, currentTeacher, getStudentsForTeacher } from "@/data/mock";
+import { currentTeacher } from "@/data/mock";
 import { Users, Calendar, Clock, BookOpen } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -9,13 +9,27 @@ import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart";
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
+import { useStoredSessions } from "@/lib/useStoredSessions";
+import { useStoredStudents } from "@/lib/useStoredDirectory";
+import { useTeacherAssignments } from "@/lib/useTeacherAssignments";
 
 export default function TeacherDashboard() {
+  const sessions = useStoredSessions();
+  const students = useStoredStudents();
+  const assignments = useTeacherAssignments();
   const mySessions = sessions.filter((s) => s.teacherId === currentTeacher.id);
   const upcoming = mySessions.filter((s) => s.status === "upcoming");
   const completed = mySessions.filter((s) => s.status === "completed");
   const cancelled = mySessions.filter((s) => s.status === "cancelled");
-  const rosterCount = getStudentsForTeacher(currentTeacher.id).length;
+  const rosterStudentIds = new Set([...mySessions.flatMap((s) => s.students), ...(assignments[currentTeacher.id] ?? [])]);
+  const rosterCount = students.filter((student) => rosterStudentIds.has(student.id)).length;
+  const completionRate = mySessions.length ? Math.round((completed.length / mySessions.length) * 100) : 0;
+  const priorityMessage =
+    cancelled.length > 0
+      ? `${cancelled.length} cancelled session${cancelled.length > 1 ? "s" : ""} need follow-up.`
+      : upcoming.length === 0
+      ? "No upcoming sessions. Consider scheduling the next class."
+      : "No urgent issues right now. Your schedule looks healthy.";
   const sessionMixData = [
     { status: "Upcoming", count: upcoming.length },
     { status: "Completed", count: completed.length },
@@ -34,6 +48,16 @@ export default function TeacherDashboard() {
           <StatCard title="Completed" value={completed.length} icon={BookOpen} />
           <StatCard title="Learners on roster" value={rosterCount} icon={Users} />
         </div>
+
+        <Card className="mb-6 border-white/55 bg-white/80 backdrop-blur-xl">
+          <CardContent className="flex flex-col gap-2 p-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="text-sm font-semibold text-foreground">Priority check</p>
+              <p className="text-sm text-muted-foreground">{priorityMessage}</p>
+            </div>
+            <p className="text-sm font-medium text-foreground">Completion rate: {completionRate}%</p>
+          </CardContent>
+        </Card>
 
         <div className="grid gap-6 lg:grid-cols-2">
           <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
@@ -103,7 +127,7 @@ export default function TeacherDashboard() {
               <CardDescription>Common workflows for class management.</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <Link to="/teacher/sessions/create">
                   <Button variant="outline" className="flex h-auto w-full flex-col gap-1.5 rounded-xl border-border bg-background/80 py-4 hover:bg-muted/80">
                     <Calendar className="h-5 w-5 text-primary" />

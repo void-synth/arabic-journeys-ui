@@ -2,13 +2,16 @@ import { AdminLayout } from "@/layouts/AdminLayout";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { DataTable } from "@/components/shared/DataTable";
 import { StatusBadge } from "@/components/shared/StatusBadge";
-import { teachers } from "@/data/mock";
+import { useStoredTeachers } from "@/lib/useStoredDirectory";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { toggleTeacherStatus } from "@/lib/directoryStore";
 
 export default function AdminTeachers() {
   const [search, setSearch] = useState("");
+  const teachers = useStoredTeachers();
   const filtered = teachers.filter((t) => t.name.toLowerCase().includes(search.toLowerCase()));
 
   return (
@@ -29,6 +32,16 @@ export default function AdminTeachers() {
             { header: "Phone", accessor: (t) => t.phone || "—", className: "hidden md:table-cell" },
             { header: "Joined", accessor: "joinedDate", className: "hidden lg:table-cell" },
             { header: "Status", accessor: (t) => <StatusBadge status={t.status} /> },
+            {
+              header: "Actions",
+              accessor: (t) => (
+                <div className="flex gap-1" onClick={(e) => e.stopPropagation()}>
+                  <Button variant="ghost" size="sm" onClick={() => toggleTeacherStatus(t.id)}>
+                    {t.status === "active" ? "Deactivate" : "Activate"}
+                  </Button>
+                </div>
+              ),
+            },
           ]}
         />
       </div>

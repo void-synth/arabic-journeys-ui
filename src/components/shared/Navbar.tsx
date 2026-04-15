@@ -1,4 +1,4 @@
-import { Menu, User } from "lucide-react";
+import { LogOut, Menu, User } from "lucide-react";
 import { NotificationDropdown } from "./NotificationDropdown";
 import type { NotificationAudience } from "@/data/mock";
 
@@ -7,9 +7,10 @@ interface NavbarProps {
   userName: string;
   onMenuToggle: () => void;
   notificationAudience: NotificationAudience;
+  onLogout?: () => void;
 }
 
-export function Navbar({ title, userName, onMenuToggle, notificationAudience }: NavbarProps) {
+export function Navbar({ title, userName, onMenuToggle, notificationAudience, onLogout }: NavbarProps) {
   return (
     <header className="sticky top-0 z-30 flex h-14 shrink-0 items-center justify-between border-b border-border/80 bg-background/80 px-4 shadow-sm backdrop-blur-xl supports-[backdrop-filter]:bg-background/65 lg:px-6">
       <div className="flex min-w-0 items-center gap-3">
@@ -32,6 +33,16 @@ export function Navbar({ title, userName, onMenuToggle, notificationAudience }: 
             <User className="h-4 w-4 text-primary" />
           </div>
           <span className="hidden max-w-[140px] truncate text-sm font-medium text-foreground sm:inline">{userName}</span>
+          {onLogout ? (
+            <button
+              type="button"
+              onClick={onLogout}
+              className="inline-flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted/80 hover:text-foreground"
+            >
+              <LogOut className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">Logout</span>
+            </button>
+          ) : null}
         </div>
       </div>
     </header>

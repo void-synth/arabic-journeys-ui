@@ -14,7 +14,7 @@ export function LandingHeader() {
               Log in
             </Button>
           </Link>
-          <Link to="/login">
+          <Link to="/signup">
             <Button
               size="sm"
               className="h-8 px-2.5 sm:h-9 sm:px-3 border border-white/50 bg-[hsl(160_36%_38%)] text-white shadow-[0_12px_40px_-16px_hsl(160_40%_30%/0.45)] hover:bg-[hsl(160_36%_34%)]"

@@ -1,18 +1,27 @@
 import { AdminLayout } from "@/layouts/AdminLayout";
 import { StatCard } from "@/components/shared/StatCard";
 import { StatusBadge } from "@/components/shared/StatusBadge";
-import { sessions, teachers, students, adminActivity } from "@/data/mock";
-import { Users, GraduationCap, Calendar, TrendingUp } from "lucide-react";
+import { adminActivity } from "@/data/mock";
+import { Users, GraduationCap, Calendar, TrendingUp, TriangleAlert } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart";
 import { Pie, PieChart } from "recharts";
+import { useStoredSessions } from "@/lib/useStoredSessions";
+import { useStoredStudents, useStoredTeachers } from "@/lib/useStoredDirectory";
 
 export default function AdminDashboard() {
+  const sessions = useStoredSessions();
+  const students = useStoredStudents();
+  const teachers = useStoredTeachers();
   const upcoming = sessions.filter((s) => s.status === "upcoming");
   const completed = sessions.filter((s) => s.status === "completed");
   const cancelled = sessions.filter((s) => s.status === "cancelled");
+  const completionRate = sessions.length ? Math.round((completed.length / sessions.length) * 100) : 0;
+  const inactiveStudents = students.filter((s) => s.status === "inactive").length;
+  const inactiveTeachers = teachers.filter((t) => t.status === "inactive").length;
+  const atRiskCount = inactiveStudents + inactiveTeachers + cancelled.length;
   const statusData = [
     { name: "Upcoming", value: upcoming.length, fill: "hsl(215 75% 48%)" },
     { name: "Completed", value: completed.length, fill: "hsl(152 50% 38%)" },
@@ -34,9 +43,21 @@ export default function AdminDashboard() {
         <div className="mb-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <StatCard title="Teachers" value={teachers.length} icon={GraduationCap} />
           <StatCard title="Learners" value={students.length} icon={Users} />
-          <StatCard title="Sessions" value={sessions.length} icon={Calendar} />
-          <StatCard title="Completion rate" value="75%" icon={TrendingUp} />
+          <StatCard title="Sessions" value={sessions.length} icon={Calendar} trend={`${cancelled.length} cancelled`} trendUp={cancelled.length === 0} />
+          <StatCard title="Completion rate" value={`${completionRate}%`} icon={TrendingUp} trend="target 90%" trendUp={completionRate >= 90} />
         </div>
+
+        <Card className="mb-6 border-white/55 bg-white/80 backdrop-blur-xl">
+          <CardContent className="flex flex-col gap-2 p-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-2">
+              <TriangleAlert className="h-4 w-4 text-amber-600" />
+              <p className="text-sm font-semibold text-foreground">At-risk summary</p>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              {atRiskCount} watch items · {inactiveStudents} inactive learners · {inactiveTeachers} inactive teachers · {cancelled.length} cancellations
+            </p>
+          </CardContent>
+        </Card>
 
         <div className="grid lg:grid-cols-2 gap-6">
           <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>

@@ -4,7 +4,10 @@ import { Check, ChevronRight, Circle } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
-const DropdownMenu = DropdownMenuPrimitive.Root;
+/** modal={false} avoids focus traps conflicting with nested overlays. */
+const DropdownMenu = (props: React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Root>) => (
+  <DropdownMenuPrimitive.Root modal={false} {...props} />
+);
 
 const DropdownMenuTrigger = DropdownMenuPrimitive.Trigger;
 

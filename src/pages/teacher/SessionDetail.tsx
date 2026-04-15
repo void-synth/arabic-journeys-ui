@@ -1,14 +1,23 @@
 import { TeacherLayout } from "@/layouts/TeacherLayout";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { StatusBadge } from "@/components/shared/StatusBadge";
-import { sessions, students as allStudents, attendance } from "@/data/mock";
+import { currentTeacher, type AttendanceRecord } from "@/data/mock";
 import { useParams, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Calendar, Clock, Link as LinkIcon, Users } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useEffect, useMemo, useState } from "react";
+import { getAttendanceRecords, upsertSessionAttendance, type AttendanceStatus } from "@/lib/attendanceStore";
+import { toast } from "@/components/ui/sonner";
+import { useStoredSessions } from "@/lib/useStoredSessions";
+import { useStoredStudents } from "@/lib/useStoredDirectory";
 
 export default function SessionDetail() {
   const { id } = useParams();
+  const sessions = useStoredSessions();
+  const allStudents = useStoredStudents();
   const session = sessions.find((s) => s.id === id);
+  const isOwner = session ? session.teacherId === currentTeacher.id : false;
 
   if (!session) {
     return (
@@ -21,8 +30,60 @@ export default function SessionDetail() {
     );
   }
 
+  if (!isOwner) {
+    return (
+      <TeacherLayout title="Access Restricted">
+        <div className="page-container text-center py-20">
+          <p className="text-muted-foreground">You can only view sessions assigned to your teaching profile.</p>
+          <Link to="/teacher/sessions">
+            <Button variant="outline" className="mt-4">
+              Back to sessions
+            </Button>
+          </Link>
+        </div>
+      </TeacherLayout>
+    );
+  }
+
   const sessionStudents = allStudents.filter((s) => session.students.includes(s.id));
-  const sessionAttendance = attendance.filter((a) => a.sessionId === session.id);
+  const [allAttendanceRows, setAllAttendanceRows] = useState<AttendanceRecord[]>(() => getAttendanceRecords());
+  const sessionAttendance = useMemo(
+    () => allAttendanceRows.filter((a) => a.sessionId === session.id),
+    [allAttendanceRows, session.id]
+  );
+  const [attendanceByStudent, setAttendanceByStudent] = useState<Record<string, AttendanceStatus>>({});
+
+  useEffect(() => {
+    const initialMap: Record<string, AttendanceStatus> = {};
+    for (const student of sessionStudents) {
+      const existing = sessionAttendance.find((row) => row.studentId === student.id);
+      initialMap[student.id] = existing?.status ?? "present";
+    }
+    setAttendanceByStudent(initialMap);
+  }, [sessionAttendance, sessionStudents]);
+
+  function handleAttendanceChange(studentId: string, status: AttendanceStatus) {
+    setAttendanceByStudent((prev) => ({ ...prev, [studentId]: status }));
+  }
+
+  function handleSaveAttendance() {
+    if (sessionStudents.length === 0) {
+      toast.error("Add students to this session before recording attendance.");
+      return;
+    }
+    const rows = sessionStudents.map((student) => ({
+      studentId: student.id,
+      studentName: student.name,
+      status: attendanceByStudent[student.id] ?? "present",
+    }));
+    upsertSessionAttendance({
+      sessionId: session.id,
+      sessionDate: session.date,
+      rows,
+    });
+    setAllAttendanceRows(getAttendanceRecords());
+    toast.success("Attendance saved for this session.");
+  }
 
   return (
     <TeacherLayout title="Session Detail">
@@ -56,19 +117,42 @@ export default function SessionDetail() {
 
             {/* Attendance */}
             <div className="surface-panel p-5 md:p-6">
-              <h3 className="font-display font-semibold text-lg text-foreground mb-4">Attendance</h3>
+              <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+                <h3 className="font-display text-lg font-semibold text-foreground">Attendance</h3>
+                <Button onClick={handleSaveAttendance}>Save attendance</Button>
+              </div>
               {sessionAttendance.length === 0 ? (
-                <p className="text-sm text-muted-foreground">No attendance records yet.</p>
+                <p className="mb-4 text-sm text-muted-foreground">No saved attendance yet. Mark statuses below and save.</p>
               ) : (
-                <div className="space-y-2">
-                  {sessionAttendance.map((a) => (
-                    <div key={a.id} className="flex items-center justify-between py-2 border-b border-border last:border-0">
-                      <span className="text-sm text-foreground">{a.studentName}</span>
-                      <StatusBadge status={a.status} />
+                <div className="mb-4 space-y-2">
+                  {sessionAttendance.map((row) => (
+                    <div key={row.id} className="flex items-center justify-between border-b border-border py-2 last:border-0">
+                      <span className="text-sm text-foreground">{row.studentName}</span>
+                      <StatusBadge status={row.status} />
                     </div>
                   ))}
                 </div>
               )}
+              <div className="space-y-3">
+                {sessionStudents.map((student) => (
+                  <div key={student.id} className="flex items-center justify-between gap-3 rounded-lg border border-border p-3">
+                    <span className="text-sm font-medium text-foreground">{student.name}</span>
+                    <Select
+                      value={attendanceByStudent[student.id] ?? "present"}
+                      onValueChange={(value) => handleAttendanceChange(student.id, value as AttendanceStatus)}
+                    >
+                      <SelectTrigger className="h-9 w-[150px]">
+                        <SelectValue placeholder="Select status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="present">Present</SelectItem>
+                        <SelectItem value="late">Late</SelectItem>
+                        <SelectItem value="absent">Absent</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 

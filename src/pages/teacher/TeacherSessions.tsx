@@ -2,16 +2,20 @@ import { TeacherLayout } from "@/layouts/TeacherLayout";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { DataTable } from "@/components/shared/DataTable";
 import { StatusBadge } from "@/components/shared/StatusBadge";
-import { sessions, currentTeacher } from "@/data/mock";
+import { currentTeacher } from "@/data/mock";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Plus, Search } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { ConfirmModal } from "@/components/shared/ConfirmModal";
+import { deleteSession } from "@/lib/sessionStore";
+import { useStoredSessions } from "@/lib/useStoredSessions";
+import { toast } from "@/components/ui/sonner";
 
 export default function TeacherSessions() {
   const navigate = useNavigate();
+  const sessions = useStoredSessions();
   const mySessions = sessions.filter((s) => s.teacherId === currentTeacher.id);
   const [search, setSearch] = useState("");
   const [deleteModal, setDeleteModal] = useState<string | null>(null);
@@ -60,7 +64,12 @@ export default function TeacherSessions() {
         <ConfirmModal
           open={!!deleteModal}
           onClose={() => setDeleteModal(null)}
-          onConfirm={() => setDeleteModal(null)}
+          onConfirm={() => {
+            if (!deleteModal) return;
+            const ok = deleteSession(deleteModal);
+            setDeleteModal(null);
+            if (ok) toast.success("Session deleted.");
+          }}
           title="Delete Session"
           description="Are you sure you want to delete this session? This action cannot be undone."
           confirmText="Delete"
