@@ -38,65 +38,61 @@ import AdminSettings from "./pages/admin/AdminSettings";
 import NotFound from "./pages/NotFound";
 import ForbiddenPage from "./pages/ForbiddenPage";
 import OnboardingPage from "./pages/OnboardingPage";
-
-import { UnderConstructionGate } from "@/components/shared/UnderConstructionGate";
 import { AuthProvider } from "@/lib/auth";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <UnderConstructionGate>
-      <AuthProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<LandingPage />} />
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/signup" element={<SignUpPage />} />
-              <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-              <Route path="/reset-password" element={<ResetPasswordPage />} />
-              <Route path="/verify-email" element={<VerifyEmailPage />} />
-              <Route path="/onboarding" element={<OnboardingPage />} />
-              <Route path="/forbidden" element={<ForbiddenPage />} />
+    <AuthProvider>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/signup" element={<SignUpPage />} />
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+            <Route path="/reset-password" element={<ResetPasswordPage />} />
+            <Route path="/verify-email" element={<VerifyEmailPage />} />
+            <Route path="/onboarding" element={<OnboardingPage />} />
+            <Route path="/forbidden" element={<ForbiddenPage />} />
 
-              {/* Teacher */}
-              <Route path="/teacher/dashboard" element={<TeacherDashboard />} />
-              <Route path="/teacher/sessions" element={<TeacherSessions />} />
-              <Route path="/teacher/sessions/create" element={<SessionForm />} />
-              <Route path="/teacher/sessions/:id" element={<SessionDetail />} />
-              <Route path="/teacher/sessions/:id/edit" element={<SessionForm />} />
-              <Route path="/teacher/students" element={<TeacherStudents />} />
-              <Route path="/teacher/students/:id" element={<StudentProfile />} />
-              <Route path="/teacher/attendance" element={<TeacherAttendance />} />
-              <Route path="/teacher/notifications" element={<TeacherNotifications />} />
-              <Route path="/teacher/settings" element={<TeacherSettings />} />
+            {/* Teacher */}
+            <Route path="/teacher/dashboard" element={<TeacherDashboard />} />
+            <Route path="/teacher/sessions" element={<TeacherSessions />} />
+            <Route path="/teacher/sessions/create" element={<SessionForm />} />
+            <Route path="/teacher/sessions/:id" element={<SessionDetail />} />
+            <Route path="/teacher/sessions/:id/edit" element={<SessionForm />} />
+            <Route path="/teacher/students" element={<TeacherStudents />} />
+            <Route path="/teacher/students/:id" element={<StudentProfile />} />
+            <Route path="/teacher/attendance" element={<TeacherAttendance />} />
+            <Route path="/teacher/notifications" element={<TeacherNotifications />} />
+            <Route path="/teacher/settings" element={<TeacherSettings />} />
 
-              {/* Student */}
-              <Route path="/student/dashboard" element={<StudentDashboard />} />
-              <Route path="/student/sessions" element={<StudentSessions />} />
-              <Route path="/student/sessions/:id" element={<StudentSessionDetail />} />
-              <Route path="/student/notifications" element={<StudentNotifications />} />
-              <Route path="/student/settings" element={<StudentSettings />} />
+            {/* Student */}
+            <Route path="/student/dashboard" element={<StudentDashboard />} />
+            <Route path="/student/sessions" element={<StudentSessions />} />
+            <Route path="/student/sessions/:id" element={<StudentSessionDetail />} />
+            <Route path="/student/notifications" element={<StudentNotifications />} />
+            <Route path="/student/settings" element={<StudentSettings />} />
 
-              {/* Admin */}
-              <Route path="/admin/dashboard" element={<AdminDashboard />} />
-              <Route path="/admin/teachers" element={<AdminTeachers />} />
-              <Route path="/admin/students" element={<AdminStudents />} />
-              <Route path="/admin/students/new" element={<AdminStudentForm />} />
-              <Route path="/admin/students/:id/edit" element={<AdminStudentForm />} />
-              <Route path="/admin/sessions" element={<AdminSessions />} />
-              <Route path="/admin/analytics" element={<AdminAnalytics />} />
-              <Route path="/admin/settings" element={<AdminSettings />} />
+            {/* Admin */}
+            <Route path="/admin/dashboard" element={<AdminDashboard />} />
+            <Route path="/admin/teachers" element={<AdminTeachers />} />
+            <Route path="/admin/students" element={<AdminStudents />} />
+            <Route path="/admin/students/new" element={<AdminStudentForm />} />
+            <Route path="/admin/students/:id/edit" element={<AdminStudentForm />} />
+            <Route path="/admin/sessions" element={<AdminSessions />} />
+            <Route path="/admin/analytics" element={<AdminAnalytics />} />
+            <Route path="/admin/settings" element={<AdminSettings />} />
 
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-        </TooltipProvider>
-      </AuthProvider>
-    </UnderConstructionGate>
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
+    </AuthProvider>
   </QueryClientProvider>
 );
 
