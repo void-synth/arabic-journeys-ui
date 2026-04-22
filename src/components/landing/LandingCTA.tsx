@@ -6,7 +6,7 @@ export function LandingCTA() {
   return (
     <section
       id="start"
-      className="scroll-mt-28 border-t border-white/50 bg-gradient-to-b from-transparent to-white/35 py-24 sm:py-28 lg:py-32"
+      className="scroll-mt-28 border-t border-[hsl(160_25%_28%/0.2)] bg-gradient-to-b from-transparent to-[hsl(42_40%_99%/0.45)] py-24 sm:py-28 lg:py-32"
     >
       <div className="relative mx-auto max-w-4xl px-4 text-center sm:px-6">
         <motion.div
@@ -15,11 +15,10 @@ export function LandingCTA() {
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.5 }}
         >
-          <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[hsl(160_34%_28%)]">Section VII — Threshold</p>
-          <h2 className="mt-4 font-display text-3xl font-medium tracking-tight text-[hsl(220_20%_18%)] sm:text-4xl">
+          <h2 className="mt-4 font-display text-3xl font-medium tracking-tight text-foreground sm:text-4xl">
             Bring every Arabic journey into one calm surface.
           </h2>
-          <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">
+          <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-foreground/70 sm:text-lg">
             Start with the experience your teachers and learners deserve today. When you are ready, wire in your real cohorts, branding, and reporting—without
             rewriting the story of how your program teaches Arabic.
           </p>
@@ -34,7 +33,7 @@ export function LandingCTA() {
           <Link to="/login">
             <Button
               size="lg"
-              className="h-11 rounded-full border border-white/50 bg-white/95 px-8 text-base font-semibold text-slate-900 shadow-[0_24px_60px_-28px_rgba(15,23,42,0.18)] hover:bg-white sm:h-12 sm:px-10"
+              className="h-11 rounded-full border border-[hsl(160_25%_28%/0.18)] bg-[hsl(42_40%_99%/0.92)] px-8 text-base font-semibold text-foreground shadow-[0_24px_60px_-28px_hsl(160_35%_18%/0.18)] hover:bg-[hsl(42_40%_99%/0.98)] sm:h-12 sm:px-10"
             >
               Enter the app
             </Button>
@@ -43,7 +42,7 @@ export function LandingCTA() {
             <Button
               size="lg"
               variant="outline"
-              className="h-11 rounded-full border-slate-300/80 bg-white/60 px-8 text-base text-slate-800 shadow-sm backdrop-blur-sm hover:bg-white/90 sm:h-12 sm:px-10"
+              className="h-11 rounded-full border-[hsl(160_25%_28%/0.22)] bg-[hsl(42_40%_99%/0.55)] px-8 text-base text-foreground shadow-sm backdrop-blur-sm hover:bg-[hsl(42_40%_99%/0.85)] sm:h-12 sm:px-10"
             >
               Explore by role
             </Button>

@@ -1,6 +1,34 @@
-@import url("https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400&family=Noto+Sans+Arabic:wght@400;500;600;700&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap");
+@font-face {
+  font-family: "Open Sans";
+  src: url("/Open_Sans/OpenSans-VariableFont_wdth,wght.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+}
 
+@font-face {
+  font-family: "Open Sans";
+  src: url("/Open_Sans/OpenSans-Italic-VariableFont_wdth,wght.ttf") format("truetype");
+  font-style: italic;
+  font-weight: 100 900;
+  font-display: swap;
+}
 
+@font-face {
+  font-family: "Schibsted Grotesk";
+  src: url("/Schibsted_Grotesk/SchibstedGrotesk-VariableFont_wght.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Schibsted Grotesk";
+  src: url("/Schibsted_Grotesk/SchibstedGrotesk-Italic-VariableFont_wght.ttf") format("truetype");
+  font-style: italic;
+  font-weight: 100 900;
+  font-display: swap;
+}
 
 @tailwind base;
 
@@ -16,29 +44,26 @@
 
   :root {
 
-    --font-sans: "Plus Jakarta Sans", system-ui, sans-serif;
+    --font-sans: "Open Sans", system-ui, sans-serif;
 
-    --font-display: "Fraunces", "Georgia", ui-serif, serif;
+    --font-display: "Schibsted Grotesk", "Open Sans", system-ui, sans-serif;
 
-    --font-arabic: "Noto Sans Arabic", "Plus Jakarta Sans", sans-serif;
-
-
-
-    --background: 42 32% 97%;
-
-    --foreground: 220 20% 18%;
+    --font-arabic: "Noto Sans Arabic", "Open Sans", sans-serif;
 
 
 
-    --card: 42 28% 99%;
-
-    --card-foreground: 220 20% 18%;
-
+    --background: 42 28% 97%;
+    --foreground: 160 34% 16%;
 
 
-    --popover: 0 0% 100%;
 
-    --popover-foreground: 220 20% 18%;
+    --card: 42 40% 99%;
+    --card-foreground: 160 34% 16%;
+
+
+
+    --popover: 42 40% 99%;
+    --popover-foreground: 160 34% 16%;
 
 
 
@@ -48,51 +73,43 @@
 
 
 
-    --secondary: 220 14% 93%;
-
-    --secondary-foreground: 220 20% 22%;
-
-
-
-    --muted: 220 14% 92%;
-
-    --muted-foreground: 220 12% 42%;
+    --secondary: 42 28% 97%;
+    --secondary-foreground: 160 34% 16%;
 
 
 
-    --accent: 38 90% 48%;
-
-    --accent-foreground: 220 22% 16%;
-
-
-
-    --destructive: 0 72% 48%;
-
-    --destructive-foreground: 0 0% 100%;
+    --muted: 42 28% 97%;
+    --muted-foreground: 160 22% 26%;
 
 
 
-    --success: 152 50% 38%;
+    --accent: 160 42% 38%;
+    --accent-foreground: 42 40% 99%;
 
+
+
+    --destructive: 160 42% 38%;
+    --destructive-foreground: 42 40% 99%;
+
+
+
+    --success: 160 42% 38%;
     --success-foreground: 42 40% 99%;
 
 
 
-    --warning: 38 92% 48%;
-
-    --warning-foreground: 220 22% 16%;
-
+    --warning: 160 42% 38%;
+    --warning-foreground: 42 40% 99%;
 
 
-    --info: 215 75% 48%;
 
+    --info: 160 42% 38%;
     --info-foreground: 42 40% 99%;
 
 
 
-    --border: 220 16% 88%;
-
-    --input: 220 14% 92%;
+    --border: 160 25% 28%;
+    --input: 42 40% 99%;
 
     --ring: 160 42% 38%;
 
@@ -104,29 +121,26 @@
 
 
 
-    --shadow-soft: 220 20% 50%;
-
-    --shadow-glass: 220 25% 30%;
-
+    --shadow-soft: 160 25% 28%;
+    --shadow-glass: 160 35% 18%;
 
 
-    --sidebar-background: 42 30% 96%;
 
-    --sidebar-foreground: 220 18% 28%;
+    --sidebar-background: 42 28% 97%;
+    --sidebar-foreground: 160 34% 16%;
 
     --sidebar-primary: 160 42% 38%;
 
     --sidebar-primary-foreground: 42 40% 99%;
 
-    --sidebar-accent: 220 12% 90%;
+    --sidebar-accent: 42 28% 97%;
+    --sidebar-accent-foreground: 160 34% 16%;
 
-    --sidebar-accent-foreground: 220 20% 20%;
-
-    --sidebar-border: 220 14% 88%;
+    --sidebar-border: 160 25% 28%;
 
     --sidebar-ring: 160 42% 38%;
 
-    --sidebar-muted: 220 10% 48%;
+    --sidebar-muted: 160 22% 26%;
 
   }
 
@@ -193,23 +207,18 @@
     isolation: isolate;
 
     background:
-
-      linear-gradient(145deg, hsl(0 0% 100% / 0.92) 0%, hsl(42 35% 98% / 0.75) 45%, hsl(0 0% 100% / 0.55) 100%);
+      linear-gradient(145deg, hsl(42 40% 99% / 0.92) 0%, hsl(42 35% 98% / 0.75) 45%, hsl(42 40% 99% / 0.55) 100%);
 
     backdrop-filter: blur(28px) saturate(180%);
 
     -webkit-backdrop-filter: blur(28px) saturate(180%);
 
-    border: 1px solid hsl(0 0% 100% / 0.65);
+    border: 1px solid hsl(42 40% 99% / 0.65);
 
     box-shadow:
-
-      0 8px 32px hsl(220 25% 20% / 0.08),
-
-      0 1px 0 0 hsl(0 0% 100% / 0.9) inset,
-
-      inset 0 -1px 0 0 hsl(220 16% 80% / 0.35),
-
+      0 8px 32px hsl(160 35% 18% / 0.08),
+      0 1px 0 0 hsl(42 40% 99% / 0.9) inset,
+      inset 0 -1px 0 0 hsl(160 25% 28% / 0.18),
       0 0 0 1px hsl(160 35% 42% / 0.08);
 
   }
@@ -225,23 +234,18 @@
     isolation: isolate;
 
     background:
-
-      linear-gradient(155deg, hsl(0 0% 100% / 0.95) 0%, hsl(42 28% 98% / 0.9) 50%, hsl(0 0% 100% / 0.82) 100%);
+      linear-gradient(155deg, hsl(42 40% 99% / 0.95) 0%, hsl(42 28% 98% / 0.9) 50%, hsl(42 40% 99% / 0.82) 100%);
 
     backdrop-filter: blur(40px) saturate(180%);
 
     -webkit-backdrop-filter: blur(40px) saturate(180%);
 
-    border: 1px solid hsl(0 0% 100% / 0.7);
+    border: 1px solid hsl(42 40% 99% / 0.7);
 
     box-shadow:
-
-      0 25px 80px hsl(220 25% 20% / 0.12),
-
-      0 1px 0 0 hsl(0 0% 100% / 0.95) inset,
-
-      inset 0 -1px 0 0 hsl(220 16% 82% / 0.4),
-
+      0 25px 80px hsl(160 35% 18% / 0.12),
+      0 1px 0 0 hsl(42 40% 99% / 0.95) inset,
+      inset 0 -1px 0 0 hsl(160 25% 28% / 0.2),
       0 0 0 1px hsl(160 35% 42% / 0.1);
 
   }
@@ -256,19 +260,17 @@
 
     isolation: isolate;
 
-    background: linear-gradient(180deg, hsl(0 0% 100% / 0.96) 0%, hsl(42 30% 98% / 0.92) 100%);
+    background: linear-gradient(180deg, hsl(42 40% 99% / 0.96) 0%, hsl(42 30% 98% / 0.92) 100%);
 
     backdrop-filter: blur(24px) saturate(180%);
 
     -webkit-backdrop-filter: blur(24px) saturate(180%);
 
-    border: 1px solid hsl(220 16% 88% / 0.9);
+    border: 1px solid hsl(160 25% 28% / 0.24);
 
     box-shadow:
-
-      0 16px 48px hsl(220 25% 20% / 0.1),
-
-      0 1px 0 0 hsl(0 0% 100% / 0.85) inset;
+      0 16px 48px hsl(160 35% 18% / 0.1),
+      0 1px 0 0 hsl(42 40% 99% / 0.85) inset;
 
   }
 
@@ -282,19 +284,17 @@
 
     isolation: isolate;
 
-    background: linear-gradient(180deg, hsl(0 0% 100% / 0.95) 0%, hsl(42 28% 99% / 0.9) 100%);
+    background: linear-gradient(180deg, hsl(42 40% 99% / 0.95) 0%, hsl(42 28% 99% / 0.9) 100%);
 
     backdrop-filter: blur(20px) saturate(180%);
 
     -webkit-backdrop-filter: blur(20px) saturate(180%);
 
-    border: 1px solid hsl(220 16% 88% / 0.85);
+    border: 1px solid hsl(160 25% 28% / 0.22);
 
     box-shadow:
-
-      0 12px 40px hsl(220 25% 20% / 0.09),
-
-      0 1px 0 0 hsl(0 0% 100% / 0.8) inset;
+      0 12px 40px hsl(160 35% 18% / 0.09),
+      0 1px 0 0 hsl(42 40% 99% / 0.8) inset;
 
   }
 
@@ -302,7 +302,7 @@
 
   .glass-overlay-scrim {
 
-    background-color: hsl(220 22% 30% / 0.25);
+    background-color: hsl(160 35% 18% / 0.25);
 
     backdrop-filter: blur(8px) saturate(120%);
 
@@ -314,13 +314,12 @@
 
   .surface-panel {
 
-    @apply rounded-[var(--radius-lg)] border border-slate-200/80 bg-card text-card-foreground shadow-sm backdrop-blur-sm;
+    @apply rounded-[var(--radius-lg)] border border-border bg-card text-card-foreground shadow-sm backdrop-blur-sm;
 
     box-shadow:
 
-      0 0 0 1px hsl(0 0% 100% / 0.6) inset,
-
-      0 20px 50px -28px hsl(220 25% 30% / 0.12);
+      0 0 0 1px hsl(42 40% 99% / 0.6) inset,
+      0 20px 50px -28px hsl(160 35% 18% / 0.12);
 
   }
 
@@ -345,8 +344,7 @@
     background-image:
 
       radial-gradient(ellipse 100% 80% at 50% -20%, hsl(160 35% 88% / 0.45), transparent 55%),
-
-      radial-gradient(ellipse 70% 50% at 100% 100%, hsl(38 40% 90% / 0.35), transparent 50%);
+      radial-gradient(ellipse 70% 50% at 100% 100%, hsl(42 28% 97% / 0.6), transparent 50%);
 
   }
 
@@ -355,10 +353,8 @@
   .mesh-bg-student {
 
     background-image:
-
-      radial-gradient(ellipse 90% 70% at 80% 10%, hsl(230 35% 90% / 0.4), transparent 55%),
-
-      radial-gradient(ellipse 60% 45% at 0% 90%, hsl(168 32% 90% / 0.35), transparent 50%);
+      radial-gradient(ellipse 90% 70% at 80% 10%, hsl(42 28% 97% / 0.6), transparent 55%),
+      radial-gradient(ellipse 60% 45% at 0% 90%, hsl(160 35% 88% / 0.35), transparent 50%);
 
   }
 
@@ -367,9 +363,7 @@
   .mesh-bg-admin {
 
     background-image:
-
-      radial-gradient(ellipse 85% 60% at 50% 0%, hsl(220 25% 90% / 0.4), transparent 55%),
-
+      radial-gradient(ellipse 85% 60% at 50% 0%, hsl(42 28% 97% / 0.6), transparent 55%),
       radial-gradient(ellipse 55% 40% at 100% 80%, hsl(160 28% 90% / 0.3), transparent 50%);
 
   }
@@ -383,8 +377,7 @@
     background-image:
 
       radial-gradient(ellipse 100% 80% at 50% -30%, hsl(160 32% 88% / 0.5), transparent 55%),
-
-      radial-gradient(ellipse 80% 50% at 100% 100%, hsl(250 28% 90% / 0.35), transparent 50%);
+      radial-gradient(ellipse 80% 50% at 100% 100%, hsl(42 28% 97% / 0.65), transparent 50%);
 
   }
 

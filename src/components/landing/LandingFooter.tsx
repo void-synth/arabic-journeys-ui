@@ -1,20 +1,30 @@
-import { GraduationCap } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export function LandingFooter() {
   return (
-    <footer className="border-t border-emerald-700/30 bg-[hsl(160_42%_38%)] py-10 sm:py-12 lg:py-14">
-      <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-6 sm:gap-8 lg:gap-10 px-4 sm:flex-row sm:items-center sm:px-6 lg:px-8">
-        <div>
-          <div className="flex items-center gap-2">
-            <GraduationCap className="h-5 w-5 text-white" aria-hidden />
-            <span className="font-display text-lg text-white">ArabicLearn</span>
-          </div>
-          <p className="mt-3 max-w-md text-sm text-white/85 leading-relaxed">
-            A purpose-built home for Arabic programs: Modern Standard Arabic tracks, Quranic literacy support, and intensive fus-ha schools that need scheduling,
-            attendance, and bilingual clarity without losing the soul of the classroom.
-          </p>
+    <footer className="border-t border-[hsl(160_25%_28%/0.2)] bg-[hsl(42_28%_97%)] py-16">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col items-center">
+          <Link to="/" className="flex items-center">
+            <img src="/logo1.svg" alt="ArabicLearn Logo" className="h-8 w-auto" />
+          </Link>
+
+          <nav className="mt-8 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-[11px] font-medium uppercase tracking-[0.28em] text-foreground/60">
+            <Link to="/" className="hover:text-foreground">
+              Home
+            </Link>
+            <Link to="/login" className="hover:text-foreground">
+              Log in
+            </Link>
+            <Link to="/login" className="hover:text-foreground">
+              Sign up
+            </Link>
+          </nav>
+
+          <div className="mt-10 h-px w-full max-w-4xl bg-[hsl(160_25%_28%/0.12)]" />
+
+          <p className="mt-6 text-sm text-foreground/60">© 2026 ArabicLearn. All rights reserved.</p>
         </div>
-        <p className="text-sm text-white/85">© 2026 ArabicLearn</p>
       </div>
     </footer>
   );

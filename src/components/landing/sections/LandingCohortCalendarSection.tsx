@@ -21,7 +21,7 @@ export function LandingCohortCalendarSection() {
           className="group relative"
         >
           <div
-            className="relative min-h-[400px] overflow-hidden border border-white/50 bg-slate-900/5 shadow-[0_28px_70px_-36px_rgba(15,23,42,0.35)] ring-1 ring-slate-900/[0.04] transition-shadow duration-500 group-hover:shadow-[0_36px_80px_-32px_rgba(15,23,42,0.4)] lg:min-h-[460px]"
+            className="relative min-h-[400px] overflow-hidden border border-[hsl(160_25%_28%/0.18)] bg-[hsl(42_40%_99%/0.35)] shadow-[0_28px_70px_-36px_hsl(160_35%_18%/0.35)] ring-1 ring-[hsl(160_25%_28%/0.06)] transition-shadow duration-500 group-hover:shadow-[0_36px_80px_-32px_hsl(160_35%_18%/0.4)] lg:min-h-[460px]"
             style={{ borderRadius: "2.75rem" }}
           >
             <img
@@ -30,14 +30,14 @@ export function LandingCohortCalendarSection() {
               className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
               loading="lazy"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/88 via-slate-950/35 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[hsl(160_35%_18%/0.9)] via-[hsl(160_35%_18%/0.38)] to-transparent" />
             <div className="relative flex h-full min-h-[400px] flex-col justify-end p-8 sm:p-10 lg:min-h-[460px]">
-              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-3 py-1 text-[11px] font-medium uppercase tracking-wider text-white/90 backdrop-blur-sm">
+              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[hsl(42_40%_99%/0.25)] bg-[hsl(42_40%_99%/0.1)] px-3 py-1 text-[11px] font-medium uppercase tracking-wider text-[hsl(42_40%_99%/0.9)] backdrop-blur-sm">
                 <UsersRound className="h-3.5 w-3.5" aria-hidden />
                 Cohort surface
               </div>
-              <h3 className="font-display text-2xl text-white sm:text-3xl">Same level, same story</h3>
-              <p className="mt-4 max-w-sm text-sm leading-relaxed text-white/85">
+              <h3 className="font-display text-2xl text-[hsl(42_40%_99%)] sm:text-3xl">Same level, same story</h3>
+              <p className="mt-4 max-w-sm text-sm leading-relaxed text-[hsl(42_40%_99%/0.86)]">
                 When pacing is visible, tutors stop apologizing for “where we are in the book.” Families see a single arc: listening, roots, review—not a pile
                 of disconnected handouts.
               </p>
@@ -53,7 +53,7 @@ export function LandingCohortCalendarSection() {
           className="group relative lg:mt-14"
         >
           <div
-            className="relative min-h-[400px] overflow-hidden border border-white/50 bg-slate-900/5 shadow-[0_28px_70px_-36px_rgba(15,23,42,0.35)] ring-1 ring-slate-900/[0.04] transition-shadow duration-500 group-hover:shadow-[0_36px_80px_-32px_rgba(15,23,42,0.4)] lg:min-h-[460px]"
+            className="relative min-h-[400px] overflow-hidden border border-[hsl(160_25%_28%/0.18)] bg-[hsl(42_40%_99%/0.35)] shadow-[0_28px_70px_-36px_hsl(160_35%_18%/0.35)] ring-1 ring-[hsl(160_25%_28%/0.06)] transition-shadow duration-500 group-hover:shadow-[0_36px_80px_-32px_hsl(160_35%_18%/0.4)] lg:min-h-[460px]"
             style={{ borderRadius: "0.85rem 3.25rem 2.25rem 3rem" }}
           >
             <img
@@ -62,14 +62,14 @@ export function LandingCohortCalendarSection() {
               className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
               loading="lazy"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/88 via-slate-950/30 to-slate-950/10" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[hsl(160_35%_18%/0.9)] via-[hsl(160_35%_18%/0.34)] to-[hsl(160_35%_18%/0.12)]" />
             <div className="relative flex h-full min-h-[400px] flex-col justify-end p-8 sm:p-10 lg:min-h-[460px]">
-              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-3 py-1 text-[11px] font-medium uppercase tracking-wider text-white/90 backdrop-blur-sm">
+              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[hsl(42_40%_99%/0.25)] bg-[hsl(42_40%_99%/0.1)] px-3 py-1 text-[11px] font-medium uppercase tracking-wider text-[hsl(42_40%_99%/0.9)] backdrop-blur-sm">
                 <CalendarRange className="h-3.5 w-3.5" aria-hidden />
                 Time & place
               </div>
-              <h3 className="font-display text-2xl text-white sm:text-3xl">Ramadan-aware, timezone-honest</h3>
-              <p className="mt-4 max-w-sm text-sm leading-relaxed text-white/85">
+              <h3 className="font-display text-2xl text-[hsl(42_40%_99%)] sm:text-3xl">Ramadan-aware, timezone-honest</h3>
+              <p className="mt-4 max-w-sm text-sm leading-relaxed text-[hsl(42_40%_99%/0.86)]">
                 Sessions carry the context admins actually need: who teaches, which room or link, and what “attended” means for your policy—without turning the
                 calendar into a second full-time job.
               </p>

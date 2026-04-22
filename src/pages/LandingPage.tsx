@@ -1,10 +1,8 @@
 import { LandingHeader } from "@/components/landing/LandingHeader";
-import { LandingHero } from "@/components/landing/LandingHero";
-import { LandingTestimonials } from "@/components/landing/LandingTestimonials";
+import { LandingHero, LandingHeroStats, LandingTrustMarquee } from "@/components/landing/LandingHero";
+import { LandingFAQ, LandingTestimonials } from "@/components/landing/LandingTestimonials";
 import { LandingCTA } from "@/components/landing/LandingCTA";
 import { LandingFooter } from "@/components/landing/LandingFooter";
-import { LandingBackdrop } from "@/components/visual/LandingBackdrop";
-import { LandingSectionDivider } from "@/components/landing/sections/LandingSectionDivider";
 import { LandingScriptLineageSection } from "@/components/landing/sections/LandingScriptLineageSection";
 import { LandingCohortCalendarSection } from "@/components/landing/sections/LandingCohortCalendarSection";
 import { LandingVoiceHybridSection } from "@/components/landing/sections/LandingVoiceHybridSection";
@@ -13,18 +11,19 @@ import { LandingInstitutionProofSection } from "@/components/landing/sections/La
 
 export default function LandingPage() {
   return (
-    <div className="relative isolate min-h-screen overflow-x-hidden text-slate-800">
-      <LandingBackdrop />
+    <div className="relative isolate min-h-screen overflow-x-hidden bg-background text-foreground">
       <LandingHeader />
       <div className="relative z-10">
         <LandingHero />
-        <LandingSectionDivider />
+        <LandingHeroStats />
+        <LandingTrustMarquee />
         <LandingScriptLineageSection />
         <LandingCohortCalendarSection />
         <LandingVoiceHybridSection />
         <LandingPathwaysPeopleSection />
         <LandingInstitutionProofSection />
         <LandingTestimonials />
+        <LandingFAQ />
         <LandingCTA />
         <LandingFooter />
       </div>

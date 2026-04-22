@@ -14,9 +14,9 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ["Plus Jakarta Sans", "system-ui", "sans-serif"],
-        display: ["Fraunces", "Georgia", "ui-serif", "serif"],
-        arabic: ["Noto Sans Arabic", "Plus Jakarta Sans", "sans-serif"],
+        sans: ["Open Sans", "system-ui", "sans-serif"],
+        display: ["Schibsted Grotesk", "Open Sans", "system-ui", "sans-serif"],
+        arabic: ["Noto Sans Arabic", "Open Sans", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",

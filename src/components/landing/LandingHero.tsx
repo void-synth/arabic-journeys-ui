@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowUpRight, BookMarked, CalendarDays, ChartNoAxesCombined, Globe2, Users } from "lucide-react";
+import { ArrowUpRight, Globe2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function LandingHero() {
@@ -13,61 +13,39 @@ export function LandingHero() {
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           className="max-w-2xl space-y-5 sm:space-y-6 lg:space-y-7 order-2 lg:order-1"
         >
-          <div className="inline-flex items-center gap-2 rounded-full border border-emerald-800/15 bg-white/55 px-3 py-1 text-[11px] font-medium uppercase tracking-wider text-emerald-900/80 backdrop-blur-sm">
-            <BookMarked className="h-3.5 w-3.5" aria-hidden />
-            Arabic · MSA pathways · RTL-ready product
-          </div>
-
           <div className="space-y-4 sm:space-y-5 lg:space-y-6">
-            <h1 className="font-display text-4xl sm:text-5xl md:text-5xl lg:text-[2.65rem] xl:text-5xl font-medium tracking-tight text-slate-900 leading-[1.08]">
-              The operating system for{" "}
-              <span className="italic text-slate-600">serious Arabic learning journeys</span>
+            <h1 className="font-display text-4xl sm:text-5xl md:text-5xl lg:text-[2.65rem] xl:text-5xl font-medium tracking-tight text-foreground leading-[1.08] whitespace-nowrap">
+              Built for Arabic teachers and learners<br />
+              <span className="text-foreground/70">make every class count</span>
             </h1>
           </div>
-
-          <p className="text-sm sm:text-base md:text-md text-slate-600 leading-relaxed max-w-lg">
-            ArabicLearn connects teachers, learners, and program leads around one truth: Arabic is not “another subject file.” It is sound, script, culture, and
-            weekly discipline—best run when scheduling, attendance, and bilingual UI stay quietly excellent in the background.
+     
+          <p className="text-sm sm:text-base md:text-md text-foreground/70 leading-relaxed max-w-lg">
+            Where Arabic is lived, not just learned—simple tools for teachers, students, and programs that care.
           </p>
 
           <div className="flex flex-wrap gap-2 sm:gap-3 lg:gap-4 pt-1 sm:pt-2">
             <Link to="/login">
-              <Button size="lg" className="h-11 sm:h-12 lg:h-14 rounded-full px-6 sm:px-8 lg:px-10 bg-[hsl(160_36%_38%)] hover:bg-[hsl(160_36%_38%)] text-white shadow-2xl shadow-slate-200 transition-all duration-300">
+              <Button
+                size="lg"
+                className="h-11 sm:h-12 lg:h-14 rounded-lg px-6 sm:px-8 lg:px-10 bg-primary hover:bg-primary text-primary-foreground shadow-2xl shadow-[hsl(160_35%_18%/0.12)] transition-all duration-300"
+              >
                 Open your workspace <ArrowUpRight className="ml-2 h-4 w-4" />
               </Button>
             </Link>
             <Link to="/onboarding">
-              <Button size="lg" variant="outline" className="h-11 sm:h-12 lg:h-14 rounded-full px-6 sm:px-8 lg:px-10 border-slate-200 text-slate-600 hover:bg-slate-50 transition-all duration-300">
+              <Button
+                size="lg"
+                variant="outline"
+                className="h-11 sm:h-12 lg:h-14 rounded-lg px-6 sm:px-8 lg:px-10 border-[hsl(160_25%_28%/0.25)] text-foreground/80 hover:bg-[hsl(42_40%_99%/0.6)] transition-all duration-300"
+              >
                 See journeys by role
               </Button>
             </Link>
           </div>
 
-          <div className="flex w-full rounded-2xl border border-white/60 bg-white/75 backdrop-blur-sm p-0 overflow-hidden mt-1 sm:mt-2 max-w-md">
-            <div className="flex-1 p-2.5 sm:p-3 flex flex-col justify-center items-start">
-              <div className="mb-1 flex items-center gap-1.5 text-[11px] text-slate-500">
-                <Users className="h-3.5 w-3.5" aria-hidden /> Active cohorts
-              </div>
-              <p className="font-display text-xl sm:text-2xl text-slate-900">24</p>
-            </div>
-            <div className="w-px bg-slate-200/70 self-stretch my-3" />
-            <div className="flex-1 p-2.5 sm:p-3 flex flex-col justify-center items-start">
-              <div className="mb-1 flex items-center gap-1.5 text-[11px] text-slate-500">
-                <CalendarDays className="h-3.5 w-3.5" aria-hidden /> Weekly sessions
-              </div>
-              <p className="font-display text-xl sm:text-2xl text-slate-900">78</p>
-            </div>
-            <div className="w-px bg-slate-200/70 self-stretch my-3" />
-            <div className="flex-1 p-2.5 sm:p-3 flex flex-col justify-center items-start">
-              <div className="mb-1 flex items-center gap-1.5 text-[11px] text-slate-500">
-                <ChartNoAxesCombined className="h-3.5 w-3.5" aria-hidden /> On-track learners
-              </div>
-              <p className="font-display text-xl sm:text-2xl text-slate-900">91%</p>
-            </div>
-          </div>
-
-          <p className="flex items-start gap-2 text-xs text-slate-500 max-w-md">
-            <Globe2 className="h-4 w-4 shrink-0 text-[hsl(160_36%_38%)]" aria-hidden />
+          <p className="flex items-start gap-2 text-xs text-foreground/60 max-w-md">
+            <Globe2 className="h-4 w-4 shrink-0 text-primary" aria-hidden />
             Built for weekend schools, online academies, and university language institutes that teach Arabic as a living language—not a forgotten attachment.
           </p>
         </motion.div>
@@ -83,11 +61,74 @@ export function LandingHero() {
               <img
                 src="/7112-removebg-preview.png"
                 alt="Hand-drawn composition of iconic Islamic architecture and the Kaaba"
-                className="h-full w-full object-contain mix-blend-multiply opacity-[0.96] drop-shadow-[0_20px_30px_rgba(15,23,42,0.16)]"
+                className="h-full w-full object-contain mix-blend-multiply opacity-[0.96] drop-shadow-[0_20px_30px_hsl(160_35%_18%/0.16)]"
               />
             </div>
           </div>
         </motion.div>
+      </div>
+    </section>
+  );
+}
+
+export function LandingHeroStats() {
+  return (
+    <section className="relative py-8 sm:py-10">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-12">
+        <div className="mx-auto flex w-full max-w-md rounded-2xl border border-[hsl(160_25%_28%/0.18)] bg-[hsl(42_40%_99%/0.78)] backdrop-blur-sm p-0 overflow-hidden">
+          <div className="flex-1 p-2.5 sm:p-3 flex flex-col justify-center items-start">
+            <div className="mb-1 flex items-center gap-1.5 text-[11px] text-foreground/60">
+              Active cohorts
+            </div>
+            <p className="font-display text-xl sm:text-2xl text-foreground">24</p>
+          </div>
+          <div className="w-px bg-[hsl(160_25%_28%/0.12)] self-stretch my-3" />
+          <div className="flex-1 p-2.5 sm:p-3 flex flex-col justify-center items-start">
+            <div className="mb-1 flex items-center gap-1.5 text-[11px] text-foreground/60">
+              Weekly sessions
+            </div>
+            <p className="font-display text-xl sm:text-2xl text-foreground">78</p>
+          </div>
+          <div className="w-px bg-[hsl(160_25%_28%/0.12)] self-stretch my-3" />
+          <div className="flex-1 p-2.5 sm:p-3 flex flex-col justify-center items-start">
+            <div className="mb-1 flex items-center gap-1.5 text-[11px] text-foreground/60">
+              On-track learners
+            </div>
+            <p className="font-display text-xl sm:text-2xl text-foreground">91%</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+export function LandingTrustMarquee() {
+  const items = [
+    "Bilingual UI",
+    "RTL-first",
+    "Calm workflows",
+    "Role-based surfaces",
+    "Fast scheduling",
+  ];
+
+  const marqueeItems = [...items, ...items, ...items];
+
+  return (
+    <section className="relative pb-10 sm:pb-12">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-12">
+        <div className="relative overflow-hidden rounded-2xl border border-[hsl(160_25%_28%/0.14)] bg-[hsl(42_40%_99%/0.45)]">
+          <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-[hsl(42_28%_97%/0.98)] to-transparent sm:w-20" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-[hsl(42_28%_97%/0.98)] to-transparent sm:w-20" />
+
+          <div className="marquee-track flex w-max items-center gap-6 px-6 py-4 sm:gap-8 sm:px-10 sm:py-5">
+            {marqueeItems.map((item, i) => (
+              <div key={`${item}-${i}`} className="flex items-center gap-3">
+                <span className="h-1.5 w-1.5 rounded-full bg-primary/60" aria-hidden />
+                <span className="text-[11px] font-semibold uppercase tracking-[0.32em] text-foreground/60">{item}</span>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   );
