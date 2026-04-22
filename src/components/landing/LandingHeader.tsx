@@ -19,7 +19,7 @@ export function LandingHeader() {
               size="sm"
               className="border border-white/50 bg-[hsl(160_36%_38%)] text-white shadow-[0_12px_40px_-16px_hsl(160_40%_30%/0.45)] hover:bg-[hsl(160_36%_34%)]"
             >
-              signup NIGGA
+              signup
             </Button>
           </Link>
         </div>
