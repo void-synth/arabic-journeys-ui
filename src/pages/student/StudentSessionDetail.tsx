@@ -1,14 +1,17 @@
 import { StudentLayout } from "@/layouts/StudentLayout";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { StatusBadge } from "@/components/shared/StatusBadge";
-import { sessions } from "@/data/mock";
+import { currentStudent } from "@/data/mock";
 import { useParams, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Calendar, Clock, Users, Link as LinkIcon } from "lucide-react";
+import { useStoredSessions } from "@/lib/useStoredSessions";
 
 export default function StudentSessionDetail() {
   const { id } = useParams();
+  const sessions = useStoredSessions();
   const session = sessions.find((s) => s.id === id);
+  const isAssigned = session ? session.students.includes(currentStudent.id) : false;
 
   if (!session) {
     return (
@@ -16,6 +19,21 @@ export default function StudentSessionDetail() {
         <div className="page-container text-center py-20">
           <p className="text-muted-foreground">Session not found.</p>
           <Link to="/student/sessions"><Button variant="outline" className="mt-4">Back</Button></Link>
+        </div>
+      </StudentLayout>
+    );
+  }
+
+  if (!isAssigned) {
+    return (
+      <StudentLayout title="Access Restricted">
+        <div className="page-container text-center py-20">
+          <p className="text-muted-foreground">You can only view sessions assigned to your profile.</p>
+          <Link to="/student/sessions">
+            <Button variant="outline" className="mt-4">
+              Back to my sessions
+            </Button>
+          </Link>
         </div>
       </StudentLayout>
     );

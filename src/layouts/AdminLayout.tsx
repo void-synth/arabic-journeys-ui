@@ -3,6 +3,8 @@ import { LayoutDashboard, Users, GraduationCap, Calendar, BarChart3, Settings } 
 import { AppSidebar, SidebarItem } from "@/components/shared/AppSidebar";
 import { Navbar } from "@/components/shared/Navbar";
 import { AppAmbientBackground } from "@/components/visual/AppAmbientBackground";
+import { useAuth } from "@/lib/auth";
+import { useNavigate } from "react-router-dom";
 
 const items: SidebarItem[] = [
   { label: "Overview", icon: LayoutDashboard, path: "/admin/dashboard" },
@@ -15,6 +17,14 @@ const items: SidebarItem[] = [
 
 export function AdminLayout({ children, title }: { children: ReactNode; title: string }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const auth = useAuth();
+  const navigate = useNavigate();
+
+  function handleLogout() {
+    auth.logout();
+    navigate("/login");
+  }
+
   return (
     <div className="relative min-h-screen flex w-full mesh-bg-admin">
       <AppAmbientBackground variant="admin" />
@@ -23,9 +33,10 @@ export function AdminLayout({ children, title }: { children: ReactNode; title: s
         <div className="flex min-w-0 flex-1 flex-col">
           <Navbar
             title={title}
-            userName="Platform admin"
+            userName={auth.userName || "Platform admin"}
             onMenuToggle={() => setSidebarOpen(true)}
             notificationAudience="admin"
+            onLogout={handleLogout}
           />
           <main className="flex-1 animate-fade-in">{children}</main>
         </div>

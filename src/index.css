@@ -392,7 +392,7 @@
 
   .page-container {
 
-    @apply p-4 md:p-6 lg:p-8 max-w-7xl mx-auto w-full relative z-10;
+    @apply p-3 sm:p-4 md:p-6 lg:p-8 max-w-7xl mx-auto w-full relative z-10;
 
   }
 
@@ -412,6 +412,35 @@
 
   }
 
+}
+
+@layer utilities {
+  .marquee-track {
+    animation: landing-marquee 32s linear infinite;
+    will-change: transform;
+  }
+
+  .feature-title-single-line {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .feature-desc-three-lines {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+@keyframes landing-marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(calc(-50% - 0.5rem));
+  }
 }
 
 

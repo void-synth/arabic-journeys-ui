@@ -10,7 +10,7 @@ export default function ForbiddenPage() {
           <ShieldX className="h-8 w-8 text-destructive" />
         </div>
         <h1 className="text-4xl font-semibold text-foreground font-display">403</h1>
-        <p className="text-muted-foreground mt-3 leading-relaxed">You don&apos;t have permission to view this area. This is a static message — no role checks run in the client.</p>
+        <p className="text-muted-foreground mt-3 leading-relaxed">You don&apos;t have permission to view this area for your current role.</p>
         <Link to="/">
           <Button className="mt-8 rounded-xl px-8" type="button">
             Go home

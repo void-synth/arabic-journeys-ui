@@ -1,19 +1,27 @@
 import { TeacherLayout } from "@/layouts/TeacherLayout";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { StatusBadge } from "@/components/shared/StatusBadge";
-import { students, sessions, attendance, currentTeacher, teacherTeachesStudent } from "@/data/mock";
+import { currentTeacher, type AttendanceRecord } from "@/data/mock";
 import { useParams, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Mail, Phone, Calendar } from "lucide-react";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { ATTENDANCE_UPDATED_EVENT, getAttendanceRecords } from "@/lib/attendanceStore";
+import { useStoredSessions } from "@/lib/useStoredSessions";
+import { useStoredStudents } from "@/lib/useStoredDirectory";
+import { useTeacherAssignments } from "@/lib/useTeacherAssignments";
 
 export default function StudentProfile() {
   const { id } = useParams();
+  const students = useStoredStudents();
   const student = students.find((s) => s.id === id);
+  const sessions = useStoredSessions();
+  const assignments = useTeacherAssignments();
+  const [allAttendanceRows, setAllAttendanceRows] = useState<AttendanceRecord[]>(() => getAttendanceRecords());
 
   const mySessionIds = useMemo(
     () => new Set(sessions.filter((s) => s.teacherId === currentTeacher.id).map((s) => s.id)),
-    []
+    [sessions]
   );
 
   if (!student) {
@@ -31,7 +39,10 @@ export default function StudentProfile() {
     );
   }
 
-  if (!teacherTeachesStudent(currentTeacher.id, student.id)) {
+  const isOnTeacherRoster =
+    sessions.some((session) => session.teacherId === currentTeacher.id && session.students.includes(student.id)) ||
+    (assignments[currentTeacher.id] ?? []).includes(student.id);
+  if (!isOnTeacherRoster) {
     return (
       <TeacherLayout title="Access restricted">
         <div className="page-container max-w-md py-20 text-center">
@@ -49,7 +60,19 @@ export default function StudentProfile() {
   }
 
   const studentSessions = sessions.filter((s) => s.students.includes(student.id) && s.teacherId === currentTeacher.id);
-  const studentAttendanceFiltered = attendance.filter((a) => a.studentId === student.id && mySessionIds.has(a.sessionId));
+  const studentAttendanceFiltered = allAttendanceRows.filter((a) => a.studentId === student.id && mySessionIds.has(a.sessionId));
+
+  useEffect(() => {
+    function refreshRows() {
+      setAllAttendanceRows(getAttendanceRecords());
+    }
+    window.addEventListener(ATTENDANCE_UPDATED_EVENT, refreshRows);
+    window.addEventListener("storage", refreshRows);
+    return () => {
+      window.removeEventListener(ATTENDANCE_UPDATED_EVENT, refreshRows);
+      window.removeEventListener("storage", refreshRows);
+    };
+  }, []);
 
   return (
     <TeacherLayout title="Learner profile">

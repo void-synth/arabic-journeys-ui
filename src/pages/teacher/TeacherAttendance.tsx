@@ -2,20 +2,36 @@ import { TeacherLayout } from "@/layouts/TeacherLayout";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { DataTable } from "@/components/shared/DataTable";
 import { StatusBadge } from "@/components/shared/StatusBadge";
-import { attendance, sessions, currentTeacher } from "@/data/mock";
+import { currentTeacher, type AttendanceRecord } from "@/data/mock";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Download, Search } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { ATTENDANCE_UPDATED_EVENT, getAttendanceRecords } from "@/lib/attendanceStore";
+import { useStoredSessions } from "@/lib/useStoredSessions";
 
 export default function TeacherAttendance() {
   const [search, setSearch] = useState("");
+  const sessions = useStoredSessions();
+  const [allAttendanceRows, setAllAttendanceRows] = useState<AttendanceRecord[]>(() => getAttendanceRecords());
   const mySessionIds = useMemo(
     () => new Set(sessions.filter((s) => s.teacherId === currentTeacher.id).map((s) => s.id)),
-    []
+    [sessions]
   );
-  const mine = useMemo(() => attendance.filter((a) => mySessionIds.has(a.sessionId)), [mySessionIds]);
+  const mine = useMemo(() => allAttendanceRows.filter((a) => mySessionIds.has(a.sessionId)), [allAttendanceRows, mySessionIds]);
   const filtered = mine.filter((a) => a.studentName.toLowerCase().includes(search.toLowerCase()));
+
+  useEffect(() => {
+    function refreshRows() {
+      setAllAttendanceRows(getAttendanceRecords());
+    }
+    window.addEventListener(ATTENDANCE_UPDATED_EVENT, refreshRows);
+    window.addEventListener("storage", refreshRows);
+    return () => {
+      window.removeEventListener(ATTENDANCE_UPDATED_EVENT, refreshRows);
+      window.removeEventListener("storage", refreshRows);
+    };
+  }, []);
 
   return (
     <TeacherLayout title="Attendance">

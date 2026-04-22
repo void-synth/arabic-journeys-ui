@@ -2,16 +2,31 @@ import { TeacherLayout } from "@/layouts/TeacherLayout";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { DataTable } from "@/components/shared/DataTable";
 import { StatusBadge } from "@/components/shared/StatusBadge";
-import { currentTeacher, getStudentsForTeacher } from "@/data/mock";
+import { currentTeacher } from "@/data/mock";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useMemo, useState } from "react";
+import { useStoredSessions } from "@/lib/useStoredSessions";
+import { useStoredStudents } from "@/lib/useStoredDirectory";
+import { useTeacherAssignments } from "@/lib/useTeacherAssignments";
 
 export default function TeacherStudents() {
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
-  const roster = useMemo(() => getStudentsForTeacher(currentTeacher.id), []);
+  const sessions = useStoredSessions();
+  const students = useStoredStudents();
+  const assignments = useTeacherAssignments();
+  const roster = useMemo(() => {
+    const fromSessions = new Set(
+      sessions
+        .filter((session) => session.teacherId === currentTeacher.id)
+        .flatMap((session) => session.students)
+    );
+    const fromAssignments = new Set(assignments[currentTeacher.id] ?? []);
+    const allowed = new Set([...fromSessions, ...fromAssignments]);
+    return students.filter((student) => allowed.has(student.id));
+  }, [assignments, sessions, students]);
   const filtered = roster.filter(
     (s) =>
       s.name.toLowerCase().includes(search.toLowerCase()) || s.email.toLowerCase().includes(search.toLowerCase())

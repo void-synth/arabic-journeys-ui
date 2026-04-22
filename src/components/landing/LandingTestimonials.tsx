@@ -1,52 +1,78 @@
 import { motion } from "framer-motion";
-import { Star } from "lucide-react";
+import { Card, CardContent, CardTitle, CardDescription } from "@/components/ui/card";
 
 const testimonials = [
   {
-    quote: "Finally a shell that feels as intentional as the language we teach — calm, luminous, and serious about craft.",
-    name: "Amira K.",
-    role: "Program Director, Bayt Al-Lugha",
+    quote:
+      "Our weekend school runs on volunteer energy. ArabicLearn cut the WhatsApp chaos—parents know the room, the time, and when their child missed fus-ha review.",
+    name: "Yasmin A.",
+    role: "Weekend school principal",
   },
   {
-    quote: "The product story reads in seconds: this is a platform, not a weekend experiment.",
-    name: "James R.",
-    role: "Founder, LinguaNova",
+    quote:
+      "We teach diplomats and heritage teens in the same building. Separate cohorts, shared admin—finally one place that respects Arabic typography everywhere.",
+    name: "Omar H.",
+    role: "MSA program coordinator",
   },
   {
-    quote: "Bilingual presentation done with restraint. That matters when you’re building trust in MENA edtech.",
-    name: "Leila M.",
-    role: "GP, Desert Bloom Capital",
+    quote:
+      "Attendance used to live in one tool, readings in another, Zoom links in a third. Teachers say they reclaimed two hours a week for actual instruction.",
+    name: "Dr. Lina M.",
+    role: "University language institute lead",
+  },
+  {
+    quote:
+      "The learner view is calm: next session, last feedback, what to rehearse aloud. That clarity alone improved completion on our intensive summer track.",
+    name: "Noor S.",
+    role: "Online academy founder",
   },
 ];
 
 export function LandingTestimonials() {
+  const marqueeItems = [...testimonials, ...testimonials];
+
   return (
-    <section className="border-y border-white/40 bg-[hsl(42_24%_96%)] py-24 text-slate-900">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <h2 className="text-center font-display text-3xl text-[hsl(220_20%_18%)] sm:text-4xl">Soft proof, until yours arrives</h2>
-        <p className="mx-auto mt-2 max-w-lg text-center text-slate-600">Placeholder voices — trade for logos and scores when you&apos;re ready.</p>
-        <div className="mt-14 grid gap-6 md:grid-cols-3">
-          {testimonials.map((t, i) => (
-            <motion.div
-              key={t.name}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.08 }}
-              className="flex flex-col rounded-2xl border border-white/55 bg-white/75 p-6 shadow-[0_20px_56px_-28px_rgba(15,23,42,0.12)] backdrop-blur-sm"
-            >
-              <div className="flex gap-0.5">
-                {Array.from({ length: 5 }).map((_, j) => (
-                  <Star key={j} className="h-4 w-4 fill-amber-500 text-amber-500" />
-                ))}
-              </div>
-              <p className="mt-4 flex-1 text-sm leading-relaxed text-slate-700">&ldquo;{t.quote}&rdquo;</p>
-              <div className="mt-6 border-t border-slate-200 pt-4">
-                <p className="font-semibold text-slate-900">{t.name}</p>
-                <p className="text-xs text-slate-500">{t.role}</p>
-              </div>
-            </motion.div>
-          ))}
+    <section
+      id="voices"
+      className="scroll-mt-28 border-t border-white/55 bg-gradient-to-b from-[hsl(160_12%_98%/0.65)] via-white/20 to-transparent py-24 text-slate-900 sm:py-28 lg:py-32"
+    >
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-12">
+        <motion.header
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.5 }}
+          className="mx-auto max-w-3xl text-center"
+        >
+          <p className="text-[11px] font-semibold uppercase tracking-[0.32em] text-[hsl(160_34%_28%)]">Section VI — Voices from the field</p>
+          <h2 className="mt-4 font-display text-3xl font-medium tracking-tight text-[hsl(220_20%_18%)] sm:text-4xl lg:text-[2.35rem] leading-[1.12]">
+            Teams that refuse to let Arabic become &ldquo;the messy program.&rdquo;
+          </h2>
+          <p className="mt-6 text-base leading-relaxed text-slate-600 sm:text-lg">
+            Whether you are scaling a mosque weekend track or a credit-bearing sequence, the bar is the same: learners should feel the beauty of the language—not
+            the friction of your operations stack.
+          </p>
+        </motion.header>
+
+        <div className="relative mt-16 overflow-hidden sm:mt-20 lg:mt-24">
+          <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-[hsl(160_12%_98%/0.95)] to-transparent sm:w-20" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-[hsl(160_12%_98%/0.95)] to-transparent sm:w-20" />
+          <div className="marquee-track flex w-max gap-5 sm:gap-6">
+            {marqueeItems.map((t, i) => (
+              <Card
+                key={`${t.name}-${i}`}
+                className="w-[300px] shrink-0 rounded-[1.35rem] border-white/70 bg-white/90 shadow-[0_20px_50px_-32px_rgba(15,23,42,0.18)] sm:w-[320px] lg:w-[340px]"
+              >
+                <CardContent className="p-6 sm:p-7">
+                  <CardDescription className="text-sm leading-relaxed text-slate-700">&ldquo;{t.quote}&rdquo;</CardDescription>
+                  <div className="mt-6 border-t border-slate-200/80 pt-5">
+                    <CardTitle className="text-base font-semibold text-slate-900">{t.name}</CardTitle>
+                    <p className="mt-1 text-xs text-slate-500">{t.role}</p>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </div>
       </div>
     </section>

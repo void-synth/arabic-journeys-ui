@@ -1,10 +1,12 @@
 import { StudentLayout } from "@/layouts/StudentLayout";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { StatusBadge } from "@/components/shared/StatusBadge";
-import { sessions, currentStudent } from "@/data/mock";
+import { currentStudent } from "@/data/mock";
 import { Link } from "react-router-dom";
+import { useStoredSessions } from "@/lib/useStoredSessions";
 
 export default function StudentSessions() {
+  const sessions = useStoredSessions();
   const mySessions = sessions.filter((s) => s.students.includes(currentStudent.id));
 
   return (

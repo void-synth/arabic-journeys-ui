@@ -2,13 +2,14 @@ import { AdminLayout } from "@/layouts/AdminLayout";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { DataTable } from "@/components/shared/DataTable";
 import { StatusBadge } from "@/components/shared/StatusBadge";
-import { sessions } from "@/data/mock";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { useState } from "react";
+import { useStoredSessions } from "@/lib/useStoredSessions";
 
 export default function AdminSessions() {
   const [search, setSearch] = useState("");
+  const sessions = useStoredSessions();
   const filtered = sessions.filter((s) => s.title.toLowerCase().includes(search.toLowerCase()));
 
   return (
