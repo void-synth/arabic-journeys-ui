@@ -10,9 +10,9 @@ const monthlyData = [
 ];
 
 const statusData = [
-  { name: "Completed", value: 45, color: "hsl(152, 55%, 36%)" },
-  { name: "Upcoming", value: 20, color: "hsl(215, 75%, 48%)" },
-  { name: "Cancelled", value: 5, color: "hsl(0, 72%, 48%)" },
+  { name: "Completed", value: 45, color: "hsl(var(--primary) / 0.85)" },
+  { name: "Upcoming", value: 20, color: "hsl(var(--primary) / 0.55)" },
+  { name: "Cancelled", value: 5, color: "hsl(var(--primary) / 0.3)" },
 ];
 
 const attendanceData = [
@@ -22,14 +22,14 @@ const attendanceData = [
   { week: "W4", rate: 92 },
 ];
 
-const axisColor = "hsl(220, 12%, 42%)";
-const gridColor = "hsl(220, 16%, 88%)";
+const axisColor = "hsl(160 22% 26% / 0.75)";
+const gridColor = "hsl(160 25% 28% / 0.14)";
 const tooltipStyle = {
   borderRadius: 12,
-  border: "1px solid hsl(220 16% 88%)",
-  background: "hsl(0 0% 100% / 0.96)",
-  color: "hsl(220 20% 18%)",
-  boxShadow: "0 12px 40px hsl(220 25% 20% / 0.12)",
+  border: "1px solid hsl(160 25% 28% / 0.14)",
+  background: "hsl(42 40% 99% / 0.96)",
+  color: "hsl(160 34% 16%)",
+  boxShadow: "0 12px 40px hsl(160 35% 18% / 0.12)",
 };
 
 export default function AdminAnalytics() {
@@ -49,8 +49,8 @@ export default function AdminAnalytics() {
                 <XAxis dataKey="month" tick={{ fontSize: 12, fill: axisColor }} axisLine={false} tickLine={false} />
                 <YAxis tick={{ fontSize: 12, fill: axisColor }} axisLine={false} tickLine={false} />
                 <Tooltip contentStyle={tooltipStyle} />
-                <Bar dataKey="sessions" fill="hsl(160, 62%, 48%)" radius={[6, 6, 0, 0]} name="Sessions" />
-                <Bar dataKey="students" fill="hsl(38, 96%, 54%)" radius={[6, 6, 0, 0]} name="Students" />
+                <Bar dataKey="sessions" fill="hsl(var(--primary) / 0.85)" radius={[6, 6, 0, 0]} name="Sessions" />
+                <Bar dataKey="students" fill="hsl(var(--primary) / 0.35)" radius={[6, 6, 0, 0]} name="Students" />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -84,7 +84,7 @@ export default function AdminAnalytics() {
                 <XAxis dataKey="week" tick={{ fontSize: 12, fill: axisColor }} axisLine={false} tickLine={false} />
                 <YAxis tick={{ fontSize: 12, fill: axisColor }} axisLine={false} tickLine={false}                 domain={[60, 100]} />
                 <Tooltip contentStyle={tooltipStyle} />
-                <Line type="monotone" dataKey="rate" stroke="hsl(160, 62%, 52%)" strokeWidth={2.5} dot={{ fill: "hsl(160, 62%, 52%)", r: 4 }} />
+                <Line type="monotone" dataKey="rate" stroke="hsl(var(--primary))" strokeWidth={2.5} dot={{ fill: "hsl(var(--primary))", r: 4 }} />
               </LineChart>
             </ResponsiveContainer>
           </div>

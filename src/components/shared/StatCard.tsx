@@ -20,7 +20,7 @@ export function StatCard({ title, value, icon: Icon, trend, trendUp, className }
       transition={{ duration: 0.35 }}
       className={cn(
         "glass-card relative overflow-hidden rounded-[var(--radius-lg)] p-5 md:p-6",
-        "shadow-[0_22px_64px_-36px_rgba(15,23,42,0.3)] transition-all duration-300 hover:-translate-y-0.5",
+        "shadow-[0_22px_64px_-36px_hsl(160_35%_18%/0.16)] transition-all duration-300 hover:-translate-y-0.5",
         className,
       )}
     >
@@ -30,7 +30,7 @@ export function StatCard({ title, value, icon: Icon, trend, trendUp, className }
           <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/90">{title}</p>
           <p className="text-2xl md:text-3xl font-bold mt-1.5 text-foreground tabular-nums font-display">{value}</p>
           {trend && (
-            <p className={cn("text-xs mt-2 font-medium", trendUp ? "text-emerald-700" : "text-rose-600")}>
+            <p className={cn("text-xs mt-2 font-medium", trendUp ? "text-primary/80" : "text-foreground/60")}>
               {trendUp ? "↑" : "↓"} {trend}
             </p>
           )}
