@@ -1,8 +1,7 @@
 import { TeacherLayout } from "@/layouts/TeacherLayout";
 import { StatCard } from "@/components/shared/StatCard";
 import { StatusBadge } from "@/components/shared/StatusBadge";
-import { currentTeacher } from "@/data/mock";
-import { Users, Calendar, Clock, BookOpen, ArrowRight, TriangleAlert, Sparkles } from "lucide-react";
+import { Users, CalendarBlank, Clock, BookOpen, ArrowRight, WarningCircle, Sparkle } from "@phosphor-icons/react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
@@ -10,16 +9,20 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { useStoredSessions } from "@/lib/useStoredSessions";
 import { useStoredStudents } from "@/lib/useStoredDirectory";
 import { useTeacherAssignments } from "@/lib/useTeacherAssignments";
+import { useAuth } from "@/lib/auth";
+import "./TeacherDashboard.css";
 
 export default function TeacherDashboard() {
+  const auth = useAuth();
+  const teacherId = auth.userId;
   const sessions = useStoredSessions();
   const students = useStoredStudents();
   const assignments = useTeacherAssignments();
-  const mySessions = sessions.filter((s) => s.teacherId === currentTeacher.id);
+  const mySessions = sessions.filter((s) => teacherId && s.teacherId === teacherId);
   const upcoming = mySessions.filter((s) => s.status === "upcoming");
   const completed = mySessions.filter((s) => s.status === "completed");
   const cancelled = mySessions.filter((s) => s.status === "cancelled");
-  const rosterStudentIds = new Set([...mySessions.flatMap((s) => s.students), ...(assignments[currentTeacher.id] ?? [])]);
+  const rosterStudentIds = new Set([...mySessions.flatMap((s) => s.students), ...(teacherId ? assignments[teacherId] ?? [] : [])]);
   const rosterCount = students.filter((student) => rosterStudentIds.has(student.id)).length;
   const completionRate = mySessions.length ? Math.round((completed.length / mySessions.length) * 100) : 0;
   const priorityMessage =
@@ -33,47 +36,47 @@ export default function TeacherDashboard() {
   return (
     <TeacherLayout title="Dashboard">
       <div className="page-container">
-        <div className="grid gap-6 lg:grid-cols-12 lg:items-start">
+        <div className="dashboard-grid">
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.45 }}
-            className="lg:col-span-12"
+            className="dashboard-span-full"
           >
-            <Card className="overflow-hidden rounded-3xl border border-[hsl(160_25%_28%/0.14)] bg-[hsl(42_40%_99%/0.6)] shadow-[0_22px_70px_-42px_hsl(160_35%_18%/0.16)]">
-              <CardContent className="relative p-8 sm:p-10 lg:p-12">
-                <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,hsl(160_45%_92%/0.35),transparent_55%)]" aria-hidden />
-                <p className="text-xs font-semibold tracking-[0.22em] uppercase text-foreground/55">{todayLabel}</p>
-                <h1 className="mt-4 font-display text-3xl sm:text-4xl lg:text-[2.6rem] leading-[1.05] text-foreground">
-                  Welcome back, {currentTeacher.name.split(" ")[0]}.
+            <Card className="dashboard-hero-card">
+              <CardContent className="dashboard-hero-content">
+                <div className="dashboard-hero-glow" aria-hidden />
+                <p className="dashboard-kicker">{todayLabel}</p>
+                <h1 className="dashboard-title font-display">
+                  Welcome back, {(auth.userName || "Teacher").split(" ")[0]}.
                 </h1>
-                <p className="mt-3 max-w-2xl text-sm sm:text-base text-foreground/70">
+                <p className="dashboard-subtitle">
                   Your schedule, roster, and quick actions—so you can spend more time teaching and less time chasing links.
                 </p>
               </CardContent>
             </Card>
           </motion.div>
 
-          <div className="lg:col-span-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="dashboard-stats dashboard-span-full">
             <StatCard title="Upcoming" value={upcoming.length} icon={Clock} />
             <StatCard title="Completed" value={completed.length} icon={BookOpen} trend={`${completionRate}% completion`} trendUp />
             <StatCard title="Learners on roster" value={rosterCount} icon={Users} />
-            <StatCard title="Cancelled" value={cancelled.length} icon={Calendar} trend="needs follow-up" trendUp={cancelled.length === 0} />
+            <StatCard title="Cancelled" value={cancelled.length} icon={CalendarBlank} trend="needs follow-up" trendUp={cancelled.length === 0} />
           </div>
 
-          <div className="lg:col-span-12 grid gap-6 lg:grid-cols-12">
+          <div className="dashboard-layout-main dashboard-span-full">
             <motion.div
               initial={{ opacity: 0, y: 14 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="lg:col-span-8"
+              className="dashboard-main-col"
             >
-              <Card className="rounded-3xl border border-[hsl(160_25%_28%/0.14)] bg-[hsl(42_40%_99%/0.55)] shadow-[0_18px_55px_-38px_hsl(160_35%_18%/0.12)]">
-                <CardHeader className="pb-3">
-                  <div className="flex items-center justify-between gap-4">
-                    <CardTitle className="font-display text-lg text-foreground">Upcoming sessions</CardTitle>
+              <Card className="dashboard-card">
+                <CardHeader className="dashboard-card-header">
+                  <div className="dashboard-header-row">
+                    <CardTitle className="dashboard-card-title font-display">Upcoming sessions</CardTitle>
                     <Link to="/teacher/sessions">
-                      <Button variant="ghost" size="sm" className="text-foreground/70 hover:text-foreground">
+                      <Button variant="ghost" size="sm" className="dashboard-ghost-btn">
                         See all <ArrowRight className="ml-1 h-4 w-4" />
                       </Button>
                     </Link>
@@ -82,17 +85,37 @@ export default function TeacherDashboard() {
                 </CardHeader>
                 <CardContent className="space-y-2">
                   {upcoming.length === 0 ? (
-                    <p className="py-10 text-center text-sm text-foreground/60">No upcoming sessions.</p>
+                    <div className="dashboard-empty-box dashboard-empty-box-lg">
+                      <div className="dashboard-empty-split">
+                        <div className="dashboard-empty-row">
+                          <Sparkle className="dashboard-empty-icon dashboard-empty-icon-lg" aria-hidden />
+                          <div>
+                            <p className="dashboard-section-title">No upcoming sessions yet</p>
+                            <p className="dashboard-copy">
+                              Create your next class so learners see it on their dashboard with join links when you add them.
+                            </p>
+                          </div>
+                        </div>
+                        <div className="dashboard-empty-actions">
+                          <Button asChild className="dashboard-primary-btn">
+                            <Link to="/teacher/sessions/create">New session</Link>
+                          </Button>
+                          <Button variant="outline" asChild className="dashboard-outline-btn">
+                            <Link to="/teacher/sessions">All sessions</Link>
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
                   ) : (
                     upcoming.slice(0, 6).map((s) => (
                       <Link
                         key={s.id}
                         to={`/teacher/sessions/${s.id}`}
-                        className="flex items-center justify-between gap-4 rounded-2xl border border-[hsl(160_25%_28%/0.12)] bg-[hsl(42_40%_99%/0.6)] p-4"
+                        className="dashboard-session-row dashboard-session-row-teacher"
                       >
-                        <div className="min-w-0">
-                          <p className="truncate text-sm font-semibold text-foreground">{s.title}</p>
-                          <p className="mt-1 text-xs text-foreground/60">
+                        <div className="dashboard-session-link">
+                          <p className="dashboard-session-title">{s.title}</p>
+                          <p className="dashboard-session-meta">
                             {s.date} · {s.time} · {s.duration} min
                           </p>
                         </div>
@@ -109,39 +132,39 @@ export default function TeacherDashboard() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.04 }}
-              className="lg:col-span-4 space-y-6"
+              className="dashboard-side-col"
             >
-              <Card className="rounded-3xl border border-[hsl(160_25%_28%/0.14)] bg-[hsl(42_40%_99%/0.55)] shadow-[0_18px_55px_-38px_hsl(160_35%_18%/0.12)]">
-                <CardHeader className="pb-3">
-                  <CardTitle className="font-display text-lg text-foreground">Priority</CardTitle>
+              <Card className="dashboard-card">
+                <CardHeader className="dashboard-card-header">
+                  <CardTitle className="dashboard-card-title font-display">Priority</CardTitle>
                   <CardDescription>What needs attention today.</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="flex items-start gap-3 rounded-2xl border border-[hsl(160_25%_28%/0.12)] bg-[hsl(42_40%_99%/0.6)] p-4">
-                    <TriangleAlert className="mt-0.5 h-4 w-4 text-primary" aria-hidden />
-                    <div className="min-w-0">
-                      <p className="text-sm font-semibold text-foreground">Priority check</p>
-                      <p className="mt-1 text-sm text-foreground/70">{priorityMessage}</p>
+                  <div className="dashboard-empty-box">
+                    <WarningCircle className="dashboard-empty-icon" aria-hidden />
+                    <div className="dashboard-session-link">
+                      <p className="dashboard-section-title">Priority check</p>
+                      <p className="dashboard-copy">{priorityMessage}</p>
                     </div>
                   </div>
                 </CardContent>
               </Card>
 
-              <Card className="rounded-3xl border border-[hsl(160_25%_28%/0.14)] bg-[hsl(42_40%_99%/0.55)] shadow-[0_18px_55px_-38px_hsl(160_35%_18%/0.12)]">
-                <CardHeader className="pb-3">
-                  <CardTitle className="font-display text-lg text-foreground">Quick actions</CardTitle>
+              <Card className="dashboard-card">
+                <CardHeader className="dashboard-card-header">
+                  <CardTitle className="dashboard-card-title font-display">Quick actions</CardTitle>
                   <CardDescription>Common teacher workflows.</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
+                  <div className="dashboard-action-grid">
                     <Button
                       variant="outline"
-                      className="justify-between rounded-2xl border-[hsl(160_25%_28%/0.16)] bg-[hsl(42_40%_99%/0.65)] text-foreground hover:bg-[hsl(42_40%_99%/0.8)]"
+                      className="dashboard-action-btn"
                       asChild
                     >
                       <Link to="/teacher/sessions/create">
                         <span className="flex items-center gap-2">
-                          <Calendar className="h-4 w-4 text-primary" aria-hidden />
+                          <CalendarBlank className="h-4 w-4 text-primary" aria-hidden />
                           New session
                         </span>
                         <ArrowRight className="h-4 w-4 text-foreground/45" aria-hidden />
@@ -150,7 +173,7 @@ export default function TeacherDashboard() {
 
                     <Button
                       variant="outline"
-                      className="justify-between rounded-2xl border-[hsl(160_25%_28%/0.16)] bg-[hsl(42_40%_99%/0.65)] text-foreground hover:bg-[hsl(42_40%_99%/0.8)]"
+                      className="dashboard-action-btn"
                       asChild
                     >
                       <Link to="/teacher/students">
@@ -164,7 +187,7 @@ export default function TeacherDashboard() {
 
                     <Button
                       variant="outline"
-                      className="justify-between rounded-2xl border-[hsl(160_25%_28%/0.16)] bg-[hsl(42_40%_99%/0.65)] text-foreground hover:bg-[hsl(42_40%_99%/0.8)]"
+                      className="dashboard-action-btn"
                       asChild
                     >
                       <Link to="/teacher/attendance">
@@ -176,9 +199,9 @@ export default function TeacherDashboard() {
                       </Link>
                     </Button>
 
-                    <div className="flex items-start gap-3 rounded-2xl border border-[hsl(160_25%_28%/0.12)] bg-[hsl(42_40%_99%/0.6)] p-4">
-                      <Sparkles className="mt-0.5 h-4 w-4 text-primary" aria-hidden />
-                      <p className="text-sm text-foreground/70">
+                    <div className="dashboard-empty-box">
+                      <Sparkle className="dashboard-empty-icon" aria-hidden />
+                      <p className="dashboard-copy">
                         Tip: add the meeting link when you create a session—students will see a “Join class” button automatically.
                       </p>
                     </div>

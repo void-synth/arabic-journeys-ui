@@ -1,41 +1,72 @@
-import { FormEvent, useState } from "react";
-import { Link } from "react-router-dom";
+import { FormEvent, useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-
-type Role = "teacher" | "student" | "admin";
+import { useAuth } from "@/lib/auth";
+import { isStudentOnboardingComplete } from "@/lib/studentOnboarding";
 
 export default function SignUpPage() {
+  const auth = useAuth();
+  const navigate = useNavigate();
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [role, setRole] = useState<Role>("student");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+
+  useEffect(() => {
+    if (!auth.isReady) return;
+    if (!auth.isAuthenticated || !auth.role) return;
+    if (auth.role === "admin") navigate("/admin/dashboard");
+    else if (auth.role === "teacher") navigate("/teacher/dashboard");
+    else if (!isStudentOnboardingComplete(auth.userId)) navigate("/onboarding");
+    else navigate("/student/dashboard");
+  }, [auth.isReady, auth.isAuthenticated, auth.role, auth.userId, navigate]);
+
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setError("");
-    setSuccess("");
+    void (async () => {
+      event.preventDefault();
+      setError("");
+      setSuccess("");
 
-    if (!fullName.trim() || !email.trim() || !password || !confirmPassword) {
-      setError("Please fill all fields.");
-      return;
-    }
-    if (password.length < 8) {
-      setError("Password must be at least 8 characters.");
-      return;
-    }
-    if (password !== confirmPassword) {
-      setError("Passwords do not match.");
-      return;
-    }
+      if (!fullName.trim() || !email.trim() || !password || !confirmPassword) {
+        setError("Please fill all fields.");
+        return;
+      }
+      if (password.length < 8) {
+        setError("Password must be at least 8 characters.");
+        return;
+      }
+      if (password !== confirmPassword) {
+        setError("Passwords do not match.");
+        return;
+      }
+      const result = await auth.signup({
+        fullName: fullName.trim(),
+        email: email.trim().toLowerCase(),
+        password,
+        role: "student",
+      });
+      if (result.error) {
+        setError(result.error);
+        return;
+      }
+      setSuccess("Account created. Check your inbox for a verification email.");
+      navigate(`/verify-email?email=${encodeURIComponent(email.trim().toLowerCase())}`);
+    })();
+  }
 
-    // Frontend-only prototype: no backend call yet.
-    setSuccess(`Account details are valid. In production, this would create a ${role} account.`);
+  function handleGoogleSignUp() {
+    void (async () => {
+      setError("");
+      const result = await auth.signInWithGoogle();
+      if (result.error) {
+        setError(result.error);
+      }
+    })();
   }
 
   return (
@@ -48,7 +79,7 @@ export default function SignUpPage() {
             </span>
             <span className="font-display text-2xl font-semibold tracking-tight text-foreground">ArabicLearn</span>
           </Link>
-          <p className="mt-3 text-sm text-muted-foreground">Create your account (prototype flow, no backend yet).</p>
+          <p className="mt-3 text-sm text-muted-foreground">Create your account for ArabicLearn.</p>
         </div>
 
         <form onSubmit={handleSubmit} className="surface-panel space-y-5 p-6 sm:p-8">
@@ -75,23 +106,6 @@ export default function SignUpPage() {
               onChange={(e) => setEmail(e.target.value)}
               className="h-11"
             />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="role">Role</Label>
-            <Select value={role} onValueChange={(value) => setRole(value as Role)}>
-              <SelectTrigger id="role" className="h-11">
-                <SelectValue placeholder="Choose role" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="student">Student</SelectItem>
-                <SelectItem value="teacher">Teacher</SelectItem>
-                <SelectItem value="admin">Admin</SelectItem>
-              </SelectContent>
-            </Select>
-            <p className="text-xs text-muted-foreground">
-              Your role controls workspace access only; you can still preview all demo routes later.
-            </p>
           </div>
 
           <div className="space-y-2">
@@ -124,6 +138,9 @@ export default function SignUpPage() {
           {error ? <p className="text-sm text-rose-600">{error}</p> : null}
           {success ? <p className="text-sm text-emerald-700">{success}</p> : null}
 
+          <Button className="h-11 w-full font-semibold" type="button" variant="outline" onClick={handleGoogleSignUp}>
+            Continue with Google
+          </Button>
           <Button className="h-11 w-full font-semibold" type="submit">
             Create account
           </Button>

@@ -38,7 +38,7 @@ export function LandingCTA() {
               Enter the app
             </Button>
           </Link>
-          <Link to="/onboarding">
+          <Link to="/signup">
             <Button
               size="lg"
               variant="outline"

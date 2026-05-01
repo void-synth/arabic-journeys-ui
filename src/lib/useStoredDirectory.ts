@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { DIRECTORY_UPDATED_EVENT, getStudentsStore, getTeachersStore } from "@/lib/directoryStore";
+import { DIRECTORY_UPDATED_EVENT, getStudentsStore, getTeachersStore, loadDirectoryStore } from "@/lib/directoryStore";
 import type { User } from "@/data/mock";
 
 export function useStoredStudents() {
@@ -7,8 +7,9 @@ export function useStoredStudents() {
 
   useEffect(() => {
     function refresh() {
-      setRows(getStudentsStore());
+      void loadDirectoryStore().then((result) => setRows(result.students));
     }
+    void loadDirectoryStore().then((result) => setRows(result.students));
     window.addEventListener(DIRECTORY_UPDATED_EVENT, refresh);
     window.addEventListener("storage", refresh);
     return () => {
@@ -25,8 +26,9 @@ export function useStoredTeachers() {
 
   useEffect(() => {
     function refresh() {
-      setRows(getTeachersStore());
+      void loadDirectoryStore().then((result) => setRows(result.teachers));
     }
+    void loadDirectoryStore().then((result) => setRows(result.teachers));
     window.addEventListener(DIRECTORY_UPDATED_EVENT, refresh);
     window.addEventListener("storage", refresh);
     return () => {

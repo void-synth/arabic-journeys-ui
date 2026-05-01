@@ -2,7 +2,6 @@ import { TeacherLayout } from "@/layouts/TeacherLayout";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { DataTable } from "@/components/shared/DataTable";
 import { StatusBadge } from "@/components/shared/StatusBadge";
-import { currentTeacher } from "@/data/mock";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Plus, Search } from "lucide-react";
@@ -12,11 +11,14 @@ import { ConfirmModal } from "@/components/shared/ConfirmModal";
 import { deleteSession } from "@/lib/sessionStore";
 import { useStoredSessions } from "@/lib/useStoredSessions";
 import { toast } from "@/components/ui/sonner";
+import { useAuth } from "@/lib/auth";
 
 export default function TeacherSessions() {
+  const auth = useAuth();
+  const teacherId = auth.userId;
   const navigate = useNavigate();
   const sessions = useStoredSessions();
-  const mySessions = sessions.filter((s) => s.teacherId === currentTeacher.id);
+  const mySessions = sessions.filter((s) => teacherId && s.teacherId === teacherId);
   const [search, setSearch] = useState("");
   const [deleteModal, setDeleteModal] = useState<string | null>(null);
 
@@ -64,9 +66,9 @@ export default function TeacherSessions() {
         <ConfirmModal
           open={!!deleteModal}
           onClose={() => setDeleteModal(null)}
-          onConfirm={() => {
+          onConfirm={async () => {
             if (!deleteModal) return;
-            const ok = deleteSession(deleteModal);
+            const ok = await deleteSession(deleteModal);
             setDeleteModal(null);
             if (ok) toast.success("Session deleted.");
           }}

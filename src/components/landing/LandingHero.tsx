@@ -14,7 +14,7 @@ export function LandingHero() {
           className="max-w-2xl space-y-5 sm:space-y-6 lg:space-y-7 order-2 lg:order-1"
         >
           <div className="space-y-4 sm:space-y-5 lg:space-y-6">
-            <h1 className="font-display text-4xl sm:text-5xl md:text-5xl lg:text-[2.65rem] xl:text-5xl font-medium tracking-tight text-foreground leading-[1.08] whitespace-nowrap">
+            <h1 className="font-display text-[2rem] sm:text-5xl md:text-5xl lg:text-[2.65rem] xl:text-5xl font-medium tracking-tight text-foreground leading-[1.08] text-balance">
               Built for Arabic teachers and learners<br />
               <span className="text-foreground/70">make every class count</span>
             </h1>
@@ -28,16 +28,16 @@ export function LandingHero() {
             <Link to="/login">
               <Button
                 size="lg"
-                className="h-11 sm:h-12 lg:h-14 rounded-lg px-6 sm:px-8 lg:px-10 bg-primary hover:bg-primary text-primary-foreground shadow-2xl shadow-[hsl(160_35%_18%/0.12)] transition-all duration-300"
+                className="h-10 sm:h-12 lg:h-14 rounded-lg px-4 sm:px-8 lg:px-10 bg-primary hover:bg-primary text-primary-foreground shadow-2xl shadow-[hsl(160_35%_18%/0.12)] transition-all duration-300"
               >
                 Open your workspace <ArrowUpRight className="ml-2 h-4 w-4" />
               </Button>
             </Link>
-            <Link to="/onboarding">
+            <Link to="/signup">
               <Button
                 size="lg"
                 variant="outline"
-                className="h-11 sm:h-12 lg:h-14 rounded-lg px-6 sm:px-8 lg:px-10 border-[hsl(160_25%_28%/0.25)] text-foreground/80 hover:bg-[hsl(42_40%_99%/0.6)] transition-all duration-300"
+                className="h-10 sm:h-12 lg:h-14 rounded-lg px-4 sm:px-8 lg:px-10 border-[hsl(160_25%_28%/0.25)] text-foreground/80 hover:bg-[hsl(42_40%_99%/0.6)] transition-all duration-300"
               >
                 See journeys by role
               </Button>
@@ -124,7 +124,7 @@ export function LandingTrustMarquee() {
             {marqueeItems.map((item, i) => (
               <div key={`${item}-${i}`} className="flex items-center gap-3">
                 <span className="h-1.5 w-1.5 rounded-full bg-primary/60" aria-hidden />
-                <span className="text-[11px] font-semibold uppercase tracking-[0.32em] text-foreground/60">{item}</span>
+                <span className="text-[11px] font-semibold uppercase tracking-[0.18em] sm:tracking-[0.32em] text-foreground/60">{item}</span>
               </div>
             ))}
           </div>

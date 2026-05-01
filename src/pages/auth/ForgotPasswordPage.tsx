@@ -3,8 +3,37 @@ import { BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useState } from "react";
+import { supabase } from "@/lib/supabaseClient";
 
 export default function ForgotPasswordPage() {
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+
+  function handleSendReset() {
+    void (async () => {
+      setError("");
+      setMessage("");
+      if (!email.trim()) {
+        setError("Enter your email.");
+        return;
+      }
+      if (!supabase) {
+        setError("Supabase is not configured.");
+        return;
+      }
+      const { error: resetError } = await supabase.auth.resetPasswordForEmail(email.trim().toLowerCase(), {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+      if (resetError) {
+        setError(resetError.message);
+        return;
+      }
+      setMessage("Reset email sent. Check your inbox.");
+    })();
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center mesh-bg-public px-4 py-12">
       <div className="w-full max-w-[420px]">
@@ -15,14 +44,19 @@ export default function ForgotPasswordPage() {
             </span>
             <span className="text-2xl font-semibold text-foreground font-display tracking-tight">ArabicLearn</span>
           </Link>
-          <p className="text-muted-foreground mt-3 text-sm">Enter your email — reset flow is UI only.</p>
+          <p className="text-muted-foreground mt-3 text-sm">Enter your email to receive a reset link.</p>
         </div>
         <div className="surface-panel p-6 sm:p-8 space-y-5">
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
-            <Input id="email" type="email" placeholder="you@example.com" className="h-11" />
+            <Input id="email" type="email" placeholder="you@example.com" className="h-11" value={email} onChange={(e) => setEmail(e.target.value)} />
           </div>
-          <Button className="w-full h-11 font-semibold" type="button">
+          {error ? <p className="text-sm text-rose-600">{error}</p> : null}
+          {message ? <p className="text-sm text-emerald-700">{message}</p> : null}
+          <p className="text-xs text-muted-foreground">
+            Email delivery depends on your Supabase email provider settings.
+          </p>
+          <Button className="w-full h-11 font-semibold" type="button" onClick={handleSendReset}>
             Send reset link
           </Button>
           <div className="text-center">

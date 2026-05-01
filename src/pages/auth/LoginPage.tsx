@@ -3,26 +3,65 @@ import { BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useState, type FormEvent } from "react";
-import { useAuth, type DemoRole } from "@/lib/auth";
+import { useEffect, useState, type FormEvent } from "react";
+import { useAuth } from "@/lib/auth";
+import { isStudentOnboardingComplete } from "@/lib/studentOnboarding";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const auth = useAuth();
   const navigate = useNavigate();
+  const LOGIN_TIMEOUT_MS = 7000;
+
+  useEffect(() => {
+    if (!auth.isReady) return;
+    if (!auth.isAuthenticated || !auth.role) return;
+    if (auth.role === "admin") navigate("/admin/dashboard");
+    else if (auth.role === "student" && !isStudentOnboardingComplete(auth.userId)) navigate("/onboarding");
+    else if (auth.role === "student") navigate("/student/dashboard");
+    else navigate("/teacher/dashboard");
+  }, [auth.isReady, auth.isAuthenticated, auth.role, auth.userId, navigate]);
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setError("");
-    if (!email.trim() || !password.trim()) {
-      setError("Enter email and password to continue.");
-      return;
-    }
-    const chosenRole: DemoRole = "teacher";
-    auth.loginAs(chosenRole);
-    navigate("/teacher/dashboard");
+    void (async () => {
+      event.preventDefault();
+      if (isSubmitting) return;
+      setIsSubmitting(true);
+      setError("");
+      if (!email.trim() || !password.trim()) {
+        setError("Enter email and password to continue.");
+        setIsSubmitting(false);
+        return;
+      }
+      const result = await Promise.race([
+        auth.login(email.trim(), password),
+        new Promise<{ error: string }>((resolve) => {
+          window.setTimeout(() => {
+            resolve({ error: "Sign-in timed out. Please try again." });
+          }, LOGIN_TIMEOUT_MS);
+        }),
+      ]);
+      if (result.error) {
+        setError(result.error);
+        setIsSubmitting(false);
+        return;
+      }
+      if (!result.role) {
+        setError("Login succeeded but role is still loading. Please wait a moment.");
+      }
+      setIsSubmitting(false);
+    })();
+  }
+
+  function handleGoogleSignIn() {
+    void (async () => {
+      setError("");
+      const result = await auth.signInWithGoogle();
+      if (result.error) setError(result.error);
+    })();
   }
 
   return (
@@ -36,7 +75,7 @@ export default function LoginPage() {
             <span className="font-display text-2xl font-semibold tracking-tight text-foreground">ArabicLearn</span>
           </Link>
           <p className="mt-3 text-sm text-muted-foreground">
-            Demo login — no server. Sign in to continue.
+            Sign in with your account.
           </p>
         </div>
         <form onSubmit={handleSubmit} className="surface-panel space-y-5 p-6 sm:p-8">
@@ -70,8 +109,11 @@ export default function LoginPage() {
             </Link>
           </div>
           {error ? <p className="text-sm text-rose-600">{error}</p> : null}
-          <Button className="h-11 w-full font-semibold" type="submit">
-            Sign in
+          <Button className="h-11 w-full font-semibold" type="button" variant="outline" onClick={handleGoogleSignIn} disabled={isSubmitting}>
+            Continue with Google
+          </Button>
+          <Button className="h-11 w-full font-semibold" type="submit" disabled={isSubmitting}>
+            {isSubmitting ? "Signing in..." : "Sign in"}
           </Button>
           <p className="text-center text-sm text-muted-foreground">
             New here?{" "}
@@ -88,19 +130,6 @@ export default function LoginPage() {
             </p>
             <p>
               <span className="font-medium text-foreground">Admin</span> — all users, sessions, analytics
-            </p>
-            <p className="pt-2">
-              <Link to="/teacher/dashboard" className="font-medium text-primary hover:underline">
-                Open teacher dashboard
-              </Link>
-              {" · "}
-              <Link to="/student/dashboard" className="font-medium text-primary hover:underline">
-                Open student dashboard
-              </Link>
-              {" · "}
-              <Link to="/admin/dashboard" className="font-medium text-primary hover:underline">
-                Open admin dashboard
-              </Link>
             </p>
           </div>
         </form>

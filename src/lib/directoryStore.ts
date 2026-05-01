@@ -1,9 +1,13 @@
 import { students as defaultStudents, teachers as defaultTeachers, type User } from "@/data/mock";
 import { writeStoredJSON } from "@/lib/localStorageJson";
+import { supabase } from "@/lib/supabaseClient";
+import type { ProfileRow } from "@/types/backend";
 
 const STUDENTS_STORAGE_KEY = "neoarabi_students_v1";
 const TEACHERS_STORAGE_KEY = "neoarabi_teachers_v1";
 export const DIRECTORY_UPDATED_EVENT = "neoarabi-directory-updated";
+let studentsCache: User[] = [...defaultStudents];
+let teachersCache: User[] = [...defaultTeachers];
 
 function isRole(value: unknown): value is User["role"] {
   return value === "teacher" || value === "student" || value === "admin";
@@ -44,22 +48,65 @@ function saveUsers(key: string, rows: User[]) {
 }
 
 export function getStudentsStore(): User[] {
-  return readUsers(STUDENTS_STORAGE_KEY, defaultStudents);
+  if (studentsCache.length > 0) return [...studentsCache];
+  studentsCache = readUsers(STUDENTS_STORAGE_KEY, defaultStudents);
+  return [...studentsCache];
 }
 
 export function getTeachersStore(): User[] {
-  return readUsers(TEACHERS_STORAGE_KEY, defaultTeachers);
+  if (teachersCache.length > 0) return [...teachersCache];
+  teachersCache = readUsers(TEACHERS_STORAGE_KEY, defaultTeachers);
+  return [...teachersCache];
 }
 
 export function saveStudentsStore(rows: User[]) {
+  studentsCache = [...rows];
   saveUsers(STUDENTS_STORAGE_KEY, rows);
 }
 
 export function saveTeachersStore(rows: User[]) {
+  teachersCache = [...rows];
   saveUsers(TEACHERS_STORAGE_KEY, rows);
 }
 
-export function upsertStudent(input: { id?: string; name: string; email: string; phone?: string }) {
+function mapProfileRow(row: ProfileRow): User {
+  return {
+    id: row.id,
+    role: row.role,
+    name: row.full_name,
+    email: row.email,
+    phone: row.phone ?? undefined,
+    joinedDate: row.created_at.slice(0, 10),
+    status: row.status,
+    avatar: row.avatar_url ?? undefined,
+  };
+}
+
+export async function loadDirectoryStore() {
+  if (!supabase) return { students: getStudentsStore(), teachers: getTeachersStore() };
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("id,role,full_name,email,phone,status,avatar_url,created_at,updated_at");
+  if (error) return { students: getStudentsStore(), teachers: getTeachersStore() };
+  const mapped = (data ?? []).map((row) => mapProfileRow(row as ProfileRow));
+  const nextStudents = mapped.filter((row) => row.role === "student");
+  const nextTeachers = mapped.filter((row) => row.role === "teacher");
+  saveStudentsStore(nextStudents);
+  saveTeachersStore(nextTeachers);
+  return { students: nextStudents, teachers: nextTeachers };
+}
+
+export async function upsertStudent(input: { id?: string; name: string; email: string; phone?: string }) {
+  if (supabase && input.id) {
+    const { error } = await supabase
+      .from("profiles")
+      .update({ full_name: input.name, email: input.email, phone: input.phone ?? null })
+      .eq("id", input.id);
+    if (!error) {
+      await loadDirectoryStore();
+      return input.id;
+    }
+  }
   const rows = getStudentsStore();
   if (input.id) {
     const next = rows.map((row) => (row.id === input.id ? { ...row, name: input.name, email: input.email, phone: input.phone } : row));
@@ -81,6 +128,16 @@ export function upsertStudent(input: { id?: string; name: string; email: string;
 }
 
 export function toggleStudentStatus(id: string) {
+  if (supabase) {
+    void (async () => {
+      const target = getStudentsStore().find((row) => row.id === id);
+      if (!target) return;
+      const nextStatus = target.status === "active" ? "inactive" : "active";
+      const { error } = await supabase.from("profiles").update({ status: nextStatus }).eq("id", id);
+      if (!error) await loadDirectoryStore();
+    })();
+    return;
+  }
   const rows = getStudentsStore().map((row) =>
     row.id === id ? { ...row, status: row.status === "active" ? "inactive" : "active" } : row
   );
@@ -88,6 +145,16 @@ export function toggleStudentStatus(id: string) {
 }
 
 export function toggleTeacherStatus(id: string) {
+  if (supabase) {
+    void (async () => {
+      const target = getTeachersStore().find((row) => row.id === id);
+      if (!target) return;
+      const nextStatus = target.status === "active" ? "inactive" : "active";
+      const { error } = await supabase.from("profiles").update({ status: nextStatus }).eq("id", id);
+      if (!error) await loadDirectoryStore();
+    })();
+    return;
+  }
   const rows = getTeachersStore().map((row) =>
     row.id === id ? { ...row, status: row.status === "active" ? "inactive" : "active" } : row
   );

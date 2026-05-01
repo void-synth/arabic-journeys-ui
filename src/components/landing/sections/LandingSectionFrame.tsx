@@ -40,12 +40,13 @@ export function LandingSectionFrame({
             headerAlign === "center" && "mx-auto text-center",
           )}
         >
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-foreground/60 sm:tracking-[0.24em]">{eyebrow}</p>
           <h2 className="mt-4 font-display text-[1.65rem] font-medium tracking-tight text-foreground sm:text-4xl lg:text-[2.4rem] lg:leading-[1.1]">
             {title}
           </h2>
           <p className="mt-6 text-base leading-[1.65] text-foreground/70 sm:text-lg">{lead}</p>
         </motion.header>
-        <div className={cn(headerAlign === "center" ? "mt-20 lg:mt-28" : "mt-16 lg:mt-24")}>{children}</div>
+        <div className={cn(headerAlign === "center" ? "mt-16 sm:mt-20 lg:mt-28" : "mt-14 sm:mt-16 lg:mt-24")}>{children}</div>
       </div>
     </section>
   );

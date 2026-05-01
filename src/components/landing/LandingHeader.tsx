@@ -64,12 +64,12 @@ export function LandingHeader() {
           </a>
         </nav>
 
-        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+        <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
           <Link to="/login">
             <Button
               variant="ghost"
               size="sm"
-              className="h-8 px-2.5 sm:h-9 sm:px-3 text-foreground/70 hover:bg-[hsl(42_40%_99%/0.7)] hover:text-foreground"
+              className="hidden h-8 px-2.5 text-foreground/70 hover:bg-[hsl(42_40%_99%/0.7)] hover:text-foreground sm:inline-flex sm:h-9 sm:px-3"
             >
               Log in
             </Button>
@@ -77,9 +77,9 @@ export function LandingHeader() {
           <Link to="/signup">
             <Button
               size="sm"
-              className="h-8 px-2.5 sm:h-9 sm:px-3 border border-[hsl(160_25%_28%/0.18)] bg-primary text-primary-foreground shadow-[0_12px_40px_-16px_hsl(160_40%_30%/0.45)] hover:bg-primary"
+              className="h-8 px-2 sm:h-9 sm:px-3 border border-[hsl(160_25%_28%/0.18)] bg-primary text-primary-foreground shadow-[0_12px_40px_-16px_hsl(160_40%_30%/0.45)] hover:bg-primary"
             >
-              signup
+              Sign up
             </Button>
           </Link>
         </div>

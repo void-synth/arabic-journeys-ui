@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
-import { getTeacherStudentMap, TEACHER_ASSIGNMENTS_UPDATED_EVENT } from "@/lib/teacherAssignmentStore";
+import { getTeacherStudentMap, loadTeacherStudentMap, TEACHER_ASSIGNMENTS_UPDATED_EVENT } from "@/lib/teacherAssignmentStore";
 
 export function useTeacherAssignments() {
   const [map, setMap] = useState(() => getTeacherStudentMap());
 
   useEffect(() => {
     function refresh() {
-      setMap(getTeacherStudentMap());
+      void loadTeacherStudentMap().then(setMap);
     }
+    void loadTeacherStudentMap().then(setMap);
     window.addEventListener(TEACHER_ASSIGNMENTS_UPDATED_EVENT, refresh);
     window.addEventListener("storage", refresh);
     return () => {

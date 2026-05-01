@@ -1,17 +1,26 @@
 import { StudentLayout } from "@/layouts/StudentLayout";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { StatusBadge } from "@/components/shared/StatusBadge";
-import { currentStudent } from "@/data/mock";
 import { useParams, Link } from "react-router-dom";
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Calendar, Clock, Users, Link as LinkIcon } from "lucide-react";
 import { useStoredSessions } from "@/lib/useStoredSessions";
+import { useAuth } from "@/lib/auth";
+import { logEvent } from "@/lib/analytics";
 
 export default function StudentSessionDetail() {
+  const auth = useAuth();
+  const studentId = auth.userId;
   const { id } = useParams();
   const sessions = useStoredSessions();
   const session = sessions.find((s) => s.id === id);
-  const isAssigned = session ? session.students.includes(currentStudent.id) : false;
+  const isAssigned = session ? (studentId ? session.students.includes(studentId) : false) : false;
+
+  useEffect(() => {
+    if (!session?.id || !isAssigned) return;
+    logEvent("session_detail_opened", { sessionId: session.id, surface: "student_detail" });
+  }, [session?.id, isAssigned]);
 
   if (!session) {
     return (
@@ -52,7 +61,12 @@ export default function StudentSessionDetail() {
           </div>
           <p className="text-sm text-muted-foreground">{session.description}</p>
           {session.meetingLink && session.status === "upcoming" && (
-            <a href={session.meetingLink} target="_blank" rel="noreferrer">
+            <a
+              href={session.meetingLink}
+              target="_blank"
+              rel="noreferrer"
+              onClick={() => logEvent("join_clicked", { sessionId: session.id, surface: "student_detail" })}
+            >
               <Button className="mt-2"><LinkIcon className="h-4 w-4 mr-2" />Join Session</Button>
             </a>
           )}

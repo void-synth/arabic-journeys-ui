@@ -12,7 +12,7 @@ export function LandingVoiceHybridSection() {
       lead="Fus-ha lives in the mouth and ear as much as the page. Hybrid programs should not punish learners for choosing distance: the same dignity, the same feedback loop, the same expectation of rehearsal between sessions."
     >
       <div className="grid gap-16 lg:grid-cols-2 lg:items-center lg:gap-20 xl:gap-24">
-        <div className="flex w-full flex-col gap-14">
+        <div className="flex w-full flex-col gap-12 sm:gap-14">
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -43,7 +43,7 @@ export function LandingVoiceHybridSection() {
             </div>
           </motion.div>
 
-          <div className="border-l-2 border-[hsl(160_25%_28%/0.2)] pl-6 lg:pl-8">
+          <div className="mx-auto w-full max-w-xl border-t-2 border-[hsl(160_25%_28%/0.2)] pt-5 sm:border-t-0 sm:border-l-2 sm:pt-0 sm:pl-6 lg:mx-0 lg:max-w-none lg:pl-8">
             <p className="text-sm font-medium uppercase tracking-[0.2em] text-foreground/70">Engineering note</p>
             <p className="mt-3 text-base leading-relaxed text-foreground/70">
               Layouts assume you will mix Arabic and Latin in the same view—labels, error text, and session titles—without breaking alignment or embarrassing
@@ -57,7 +57,7 @@ export function LandingVoiceHybridSection() {
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.55 }}
-          className="group relative min-w-0"
+          className="group relative min-w-0 mx-auto w-full max-w-2xl lg:max-w-none"
         >
           <div
             className="relative aspect-[16/11] w-full overflow-hidden border border-[hsl(160_25%_28%/0.18)] bg-[hsl(42_40%_99%/0.4)] shadow-[0_36px_85px_-40px_hsl(160_35%_18%/0.42)] lg:aspect-[5/3]"

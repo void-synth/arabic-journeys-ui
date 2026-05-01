@@ -2,29 +2,33 @@ import { TeacherLayout } from "@/layouts/TeacherLayout";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { DataTable } from "@/components/shared/DataTable";
 import { StatusBadge } from "@/components/shared/StatusBadge";
-import { currentTeacher, type AttendanceRecord } from "@/data/mock";
+import { type AttendanceRecord } from "@/data/mock";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Download, Search } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { ATTENDANCE_UPDATED_EVENT, getAttendanceRecords } from "@/lib/attendanceStore";
+import { ATTENDANCE_UPDATED_EVENT, getAttendanceRecords, loadAttendanceRecords } from "@/lib/attendanceStore";
 import { useStoredSessions } from "@/lib/useStoredSessions";
+import { useAuth } from "@/lib/auth";
 
 export default function TeacherAttendance() {
+  const auth = useAuth();
+  const teacherId = auth.userId;
   const [search, setSearch] = useState("");
   const sessions = useStoredSessions();
   const [allAttendanceRows, setAllAttendanceRows] = useState<AttendanceRecord[]>(() => getAttendanceRecords());
   const mySessionIds = useMemo(
-    () => new Set(sessions.filter((s) => s.teacherId === currentTeacher.id).map((s) => s.id)),
-    [sessions]
+    () => new Set(sessions.filter((s) => teacherId && s.teacherId === teacherId).map((s) => s.id)),
+    [sessions, teacherId]
   );
   const mine = useMemo(() => allAttendanceRows.filter((a) => mySessionIds.has(a.sessionId)), [allAttendanceRows, mySessionIds]);
   const filtered = mine.filter((a) => a.studentName.toLowerCase().includes(search.toLowerCase()));
 
   useEffect(() => {
     function refreshRows() {
-      setAllAttendanceRows(getAttendanceRecords());
+      void loadAttendanceRecords().then(setAllAttendanceRows);
     }
+    void loadAttendanceRecords().then(setAllAttendanceRows);
     window.addEventListener(ATTENDANCE_UPDATED_EVENT, refreshRows);
     window.addEventListener("storage", refreshRows);
     return () => {

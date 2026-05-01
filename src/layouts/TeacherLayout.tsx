@@ -3,7 +3,6 @@ import { LayoutDashboard, Calendar, Users, ClipboardList, Bell, Settings } from 
 import { AppSidebar, SidebarItem } from "@/components/shared/AppSidebar";
 import { Navbar } from "@/components/shared/Navbar";
 import { AppAmbientBackground } from "@/components/visual/AppAmbientBackground";
-import { currentTeacher } from "@/data/mock";
 import { useAuth } from "@/lib/auth";
 import { useNavigate } from "react-router-dom";
 
@@ -34,7 +33,8 @@ export function TeacherLayout({ children, title }: { children: ReactNode; title:
         <div className="flex min-w-0 flex-1 flex-col">
           <Navbar
             title={title}
-            userName={auth.userName || currentTeacher.name}
+            userName={auth.userName || "Teacher"}
+            userAvatar={auth.userAvatar}
             onMenuToggle={() => setSidebarOpen(true)}
             notificationAudience="teacher"
             onLogout={handleLogout}

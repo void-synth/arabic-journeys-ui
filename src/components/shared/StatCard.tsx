@@ -1,11 +1,13 @@
-import { LucideIcon } from "lucide-react";
+import type { ComponentType, SVGProps } from "react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
+
+type DashboardIcon = ComponentType<SVGProps<SVGSVGElement>>;
 
 interface StatCardProps {
   title: string;
   value: string | number;
-  icon: LucideIcon;
+  icon: DashboardIcon;
   trend?: string;
   trendUp?: boolean;
   className?: string;

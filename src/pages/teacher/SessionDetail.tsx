@@ -1,23 +1,65 @@
 import { TeacherLayout } from "@/layouts/TeacherLayout";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { StatusBadge } from "@/components/shared/StatusBadge";
-import { currentTeacher, type AttendanceRecord } from "@/data/mock";
+import { type AttendanceRecord } from "@/data/mock";
 import { useParams, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Calendar, Clock, Link as LinkIcon, Users } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useEffect, useMemo, useState } from "react";
-import { getAttendanceRecords, upsertSessionAttendance, type AttendanceStatus } from "@/lib/attendanceStore";
+import { ATTENDANCE_UPDATED_EVENT, getAttendanceRecords, loadAttendanceRecords, upsertSessionAttendance, type AttendanceStatus } from "@/lib/attendanceStore";
 import { toast } from "@/components/ui/sonner";
 import { useStoredSessions } from "@/lib/useStoredSessions";
 import { useStoredStudents } from "@/lib/useStoredDirectory";
+import { useAuth } from "@/lib/auth";
+import { logEvent } from "@/lib/analytics";
 
 export default function SessionDetail() {
+  const auth = useAuth();
+  const teacherId = auth.userId;
   const { id } = useParams();
   const sessions = useStoredSessions();
   const allStudents = useStoredStudents();
   const session = sessions.find((s) => s.id === id);
-  const isOwner = session ? session.teacherId === currentTeacher.id : false;
+  const isOwner = session ? session.teacherId === teacherId : false;
+
+  const sessionStudents = useMemo(
+    () => (session ? allStudents.filter((s) => session.students.includes(s.id)) : []),
+    [allStudents, session]
+  );
+
+  const [allAttendanceRows, setAllAttendanceRows] = useState<AttendanceRecord[]>(() => getAttendanceRecords());
+  useEffect(() => {
+    function refreshRows() {
+      void loadAttendanceRecords().then(setAllAttendanceRows);
+    }
+    void loadAttendanceRecords().then(setAllAttendanceRows);
+    window.addEventListener(ATTENDANCE_UPDATED_EVENT, refreshRows);
+    return () => {
+      window.removeEventListener(ATTENDANCE_UPDATED_EVENT, refreshRows);
+    };
+  }, []);
+
+  const sessionAttendance = useMemo(
+    () => (session ? allAttendanceRows.filter((a) => a.sessionId === session.id) : []),
+    [allAttendanceRows, session]
+  );
+  const [attendanceByStudent, setAttendanceByStudent] = useState<Record<string, AttendanceStatus>>({});
+
+  useEffect(() => {
+    if (!session) return;
+    const initialMap: Record<string, AttendanceStatus> = {};
+    for (const student of sessionStudents) {
+      const existing = sessionAttendance.find((row) => row.studentId === student.id);
+      initialMap[student.id] = existing?.status ?? "present";
+    }
+    setAttendanceByStudent(initialMap);
+  }, [session, sessionAttendance, sessionStudents]);
+
+  useEffect(() => {
+    if (!session?.id || !isOwner) return;
+    logEvent("session_detail_opened", { sessionId: session.id, surface: "teacher_detail" });
+  }, [session?.id, isOwner]);
 
   if (!session) {
     return (
@@ -45,23 +87,6 @@ export default function SessionDetail() {
     );
   }
 
-  const sessionStudents = allStudents.filter((s) => session.students.includes(s.id));
-  const [allAttendanceRows, setAllAttendanceRows] = useState<AttendanceRecord[]>(() => getAttendanceRecords());
-  const sessionAttendance = useMemo(
-    () => allAttendanceRows.filter((a) => a.sessionId === session.id),
-    [allAttendanceRows, session.id]
-  );
-  const [attendanceByStudent, setAttendanceByStudent] = useState<Record<string, AttendanceStatus>>({});
-
-  useEffect(() => {
-    const initialMap: Record<string, AttendanceStatus> = {};
-    for (const student of sessionStudents) {
-      const existing = sessionAttendance.find((row) => row.studentId === student.id);
-      initialMap[student.id] = existing?.status ?? "present";
-    }
-    setAttendanceByStudent(initialMap);
-  }, [sessionAttendance, sessionStudents]);
-
   function handleAttendanceChange(studentId: string, status: AttendanceStatus) {
     setAttendanceByStudent((prev) => ({ ...prev, [studentId]: status }));
   }
@@ -81,7 +106,7 @@ export default function SessionDetail() {
       sessionDate: session.date,
       rows,
     });
-    setAllAttendanceRows(getAttendanceRecords());
+    void loadAttendanceRecords().then(setAllAttendanceRows);
     toast.success("Attendance saved for this session.");
   }
 

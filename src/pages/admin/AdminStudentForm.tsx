@@ -31,6 +31,7 @@ export default function AdminStudentForm() {
   const [phone, setPhone] = useState(stored.phone);
 
   function save() {
+    void (async () => {
     const cleanName = name.trim();
     const cleanEmail = email.trim().toLowerCase();
     const cleanPhone = phone.trim();
@@ -54,9 +55,10 @@ export default function AdminStudentForm() {
       return;
     }
     writeStoredJSON(draftKey, { name: cleanName, email: cleanEmail, phone: cleanPhone });
-    upsertStudent({ id, name: cleanName, email: cleanEmail, phone: cleanPhone });
+    await upsertStudent({ id, name: cleanName, email: cleanEmail, phone: cleanPhone });
     toast.success(isEdit ? "Learner updated (frontend local persistence)." : "Learner added (frontend local persistence).");
     navigate("/admin/students");
+    })();
   }
 
   return (

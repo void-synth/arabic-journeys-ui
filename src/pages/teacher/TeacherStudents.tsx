@@ -2,7 +2,6 @@ import { TeacherLayout } from "@/layouts/TeacherLayout";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { DataTable } from "@/components/shared/DataTable";
 import { StatusBadge } from "@/components/shared/StatusBadge";
-import { currentTeacher } from "@/data/mock";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -10,8 +9,11 @@ import { useMemo, useState } from "react";
 import { useStoredSessions } from "@/lib/useStoredSessions";
 import { useStoredStudents } from "@/lib/useStoredDirectory";
 import { useTeacherAssignments } from "@/lib/useTeacherAssignments";
+import { useAuth } from "@/lib/auth";
 
 export default function TeacherStudents() {
+  const auth = useAuth();
+  const teacherId = auth.userId;
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const sessions = useStoredSessions();
@@ -20,13 +22,13 @@ export default function TeacherStudents() {
   const roster = useMemo(() => {
     const fromSessions = new Set(
       sessions
-        .filter((session) => session.teacherId === currentTeacher.id)
+        .filter((session) => teacherId && session.teacherId === teacherId)
         .flatMap((session) => session.students)
     );
-    const fromAssignments = new Set(assignments[currentTeacher.id] ?? []);
+    const fromAssignments = new Set(teacherId ? assignments[teacherId] ?? [] : []);
     const allowed = new Set([...fromSessions, ...fromAssignments]);
     return students.filter((student) => allowed.has(student.id));
-  }, [assignments, sessions, students]);
+  }, [assignments, sessions, students, teacherId]);
   const filtered = roster.filter(
     (s) =>
       s.name.toLowerCase().includes(search.toLowerCase()) || s.email.toLowerCase().includes(search.toLowerCase())

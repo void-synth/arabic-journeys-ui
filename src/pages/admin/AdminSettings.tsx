@@ -5,10 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/components/ui/sonner";
-import { useState } from "react";
-import { readStoredJSON, writeStoredJSON } from "@/lib/localStorageJson";
-
-const PLATFORM_KEY = "neoarabi_settings_admin_platform";
+import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabaseClient";
 
 type Platform = { platformName: string; supportEmail: string; maxStudentsPerSession: string };
 
@@ -18,13 +16,22 @@ export default function AdminSettings() {
     supportEmail: "support@arabiclearn.com",
     maxStudentsPerSession: "20",
   };
-  const stored = readStoredJSON<Platform>(PLATFORM_KEY, defaults);
+  const [platformName, setPlatformName] = useState(defaults.platformName);
+  const [supportEmail, setSupportEmail] = useState(defaults.supportEmail);
+  const [maxStudentsPerSession, setMaxStudentsPerSession] = useState(defaults.maxStudentsPerSession);
 
-  const [platformName, setPlatformName] = useState(stored.platformName);
-  const [supportEmail, setSupportEmail] = useState(stored.supportEmail);
-  const [maxStudentsPerSession, setMaxStudentsPerSession] = useState(stored.maxStudentsPerSession);
+  useEffect(() => {
+    if (!supabase) return;
+    void (async () => {
+      const { data } = await supabase.from("platform_settings").select("platform_name,support_email,max_students_per_session").eq("id", true).maybeSingle();
+      if (!data) return;
+      setPlatformName(data.platform_name ?? defaults.platformName);
+      setSupportEmail(data.support_email ?? defaults.supportEmail);
+      setMaxStudentsPerSession(String(data.max_students_per_session ?? defaults.maxStudentsPerSession));
+    })();
+  }, []);
 
-  function save() {
+  async function save() {
     const cleanName = platformName.trim();
     const cleanEmail = supportEmail.trim().toLowerCase();
     const max = Number(maxStudentsPerSession);
@@ -41,28 +48,45 @@ export default function AdminSettings() {
       toast.error("Max students per session must be between 1 and 200.");
       return;
     }
-    writeStoredJSON(PLATFORM_KEY, {
-      platformName: cleanName,
-      supportEmail: cleanEmail,
-      maxStudentsPerSession: String(max),
-    });
-    toast.success("Settings saved in this browser only.");
+    if (!supabase) {
+      toast.error("Supabase is not configured.");
+      return;
+    }
+    const { error } = await supabase
+      .from("platform_settings")
+      .update({
+        platform_name: cleanName,
+        support_email: cleanEmail,
+        max_students_per_session: max,
+      })
+      .eq("id", true);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    toast.success("Platform settings updated.");
   }
 
-  function resetAllFrontendData() {
-    const ok = window.confirm("Reset all frontend demo data? This will clear sessions, directory, notifications, assignments, and settings.");
+  async function resetAllFrontendData() {
+    const ok = window.confirm("Reset all demo data in backend and local cache?");
     if (!ok) return;
+    if (supabase) {
+      const result = await supabase.rpc("admin_reset_demo_data");
+      if (result.error) {
+        toast.error(result.error.message);
+        return;
+      }
+    }
     const keys = Object.keys(localStorage).filter((key) => key.startsWith("neoarabi_"));
     for (const key of keys) localStorage.removeItem(key);
-    sessionStorage.removeItem("dev_gate_unlocked");
-    toast.success("Frontend demo data reset. Reloading...");
+    toast.success("Demo data reset. Reloading...");
     window.setTimeout(() => window.location.reload(), 450);
   }
 
   return (
     <AdminLayout title="Settings">
       <div className="page-container max-w-3xl">
-        <PageHeader title="Platform Settings" description="Demo UI — values persist in this browser only until you clear site data." />
+        <PageHeader title="Platform Settings" description="Manage platform defaults and reset demo backend data." />
         <div className="space-y-10">
           <div className="surface-panel p-6 sm:p-8 space-y-5">
             <h3 className="font-display font-semibold text-lg text-foreground">General</h3>

@@ -1,7 +1,6 @@
 import { AdminLayout } from "@/layouts/AdminLayout";
 import { StatCard } from "@/components/shared/StatCard";
 import { StatusBadge } from "@/components/shared/StatusBadge";
-import { adminActivity } from "@/data/mock";
 import { Users, GraduationCap, Calendar, TrendingUp, TriangleAlert, ArrowRight, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -9,6 +8,10 @@ import { Button } from "@/components/ui/button";
 import { useStoredSessions } from "@/lib/useStoredSessions";
 import { useStoredStudents, useStoredTeachers } from "@/lib/useStoredDirectory";
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabaseClient";
+
+type ActivityItem = { id: string; label: string; detail: string; time: string; tone: "info" | "success" | "warning" };
 
 export default function AdminDashboard() {
   const sessions = useStoredSessions();
@@ -22,6 +25,26 @@ export default function AdminDashboard() {
   const inactiveTeachers = teachers.filter((t) => t.status === "inactive").length;
   const atRiskCount = inactiveStudents + inactiveTeachers + cancelled.length;
   const todayLabel = new Date().toLocaleDateString(undefined, { month: "long", day: "numeric", year: "numeric" });
+  const [activity, setActivity] = useState<ActivityItem[]>([]);
+
+  useEffect(() => {
+    if (!supabase) return;
+    void (async () => {
+      const { data } = await supabase
+        .from("audit_log")
+        .select("id,action,target_table,created_at")
+        .order("created_at", { ascending: false })
+        .limit(8);
+      const mapped: ActivityItem[] = (data ?? []).map((row) => ({
+        id: row.id as string,
+        label: `${String(row.action)} ${String(row.target_table)}`,
+        detail: "Recorded from backend audit log",
+        time: new Date(String(row.created_at)).toLocaleString(),
+        tone: String(row.action) === "DELETE" ? "warning" : String(row.action) === "INSERT" ? "success" : "info",
+      }));
+      setActivity(mapped);
+    })();
+  }, []);
 
   return (
     <AdminLayout title="Overview">
@@ -141,7 +164,7 @@ export default function AdminDashboard() {
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-3">
-                    {adminActivity.map((a) => (
+                    {activity.map((a) => (
                       <li key={a.id} className="flex gap-3 text-sm">
                         <span
                           className={[
@@ -157,6 +180,7 @@ export default function AdminDashboard() {
                         </div>
                       </li>
                     ))}
+                    {activity.length === 0 ? <li className="text-xs text-muted-foreground">No backend activity yet.</li> : null}
                   </ul>
                 </CardContent>
               </Card>

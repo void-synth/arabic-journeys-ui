@@ -13,7 +13,7 @@ export function LandingInstitutionProofSection() {
       lead="This is the narrow band where software either earns trust or burns it: roles, permissions, bilingual surfaces, and the story of who showed up. No gallery wall of tiny tiles—just signal, spaced like a briefing room."
     >
       <div className="grid gap-16 lg:grid-cols-2 lg:items-start lg:gap-20 xl:gap-24">
-        <div className="space-y-10 lg:pr-6">
+        <div className="mx-auto w-full max-w-xl space-y-10 lg:mx-0 lg:max-w-none lg:pr-6">
           <div className="space-y-5 text-base leading-relaxed text-foreground/70">
             <p>
               Teachers should not memorize five URLs. Parents should not decode screenshots. Admins should not rebuild truth every Sunday night. When operations
@@ -21,7 +21,7 @@ export function LandingInstitutionProofSection() {
             </p>
           </div>
 
-          <div className="max-w-md lg:max-w-none divide-y divide-[hsl(160_25%_28%/0.14)] rounded-2xl border border-[hsl(160_25%_28%/0.14)] bg-[hsl(42_40%_99%/0.45)]">
+          <div className="divide-y divide-[hsl(160_25%_28%/0.14)] rounded-2xl border border-[hsl(160_25%_28%/0.14)] bg-[hsl(42_40%_99%/0.45)]">
             <div className="flex items-start gap-4 p-6">
               <Sparkles className="mt-0.5 h-5 w-5 shrink-0 text-primary" aria-hidden />
               <div>
@@ -46,7 +46,7 @@ export function LandingInstitutionProofSection() {
           </div>
         </div>
 
-        <div className="space-y-7">
+        <div className="mx-auto w-full max-w-xl space-y-7 lg:mx-0 lg:max-w-none">
           <motion.div
             initial={{ opacity: 0, y: 18 }}
             whileInView={{ opacity: 1, y: 0 }}

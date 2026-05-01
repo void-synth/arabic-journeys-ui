@@ -6,14 +6,16 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { currentTeacher } from "@/data/mock";
 import { Copy, Loader2, Sparkles } from "lucide-react";
 import { toast } from "@/components/ui/sonner";
 import { removeStoredKey, writeStoredJSON } from "@/lib/localStorageJson";
-import { createSession, updateSession } from "@/lib/sessionStore";
+import { createSession, loadSessions, updateSession } from "@/lib/sessionStore";
 import { useStoredSessions } from "@/lib/useStoredSessions";
 import { useStoredStudents } from "@/lib/useStoredDirectory";
 import { useTeacherAssignments } from "@/lib/useTeacherAssignments";
+import { supabase } from "@/lib/supabaseClient";
+import { useAuth } from "@/lib/auth";
+import { logEvent } from "@/lib/analytics";
 
 type SessionDraft = {
   title: string;
@@ -55,6 +57,9 @@ export default function SessionForm() {
   const students = useStoredStudents();
   const assignments = useTeacherAssignments();
   const session = id ? sessions.find((s) => s.id === id) : null;
+  const auth = useAuth();
+  const teacherId = auth.userId;
+  const teacherName = auth.userName || "Teacher";
   const isEdit = !!session;
   const draftKey = `neoarabi_session_draft_${id ?? "new"}`;
 
@@ -92,23 +97,27 @@ export default function SessionForm() {
   const [isGeneratingLink, setIsGeneratingLink] = useState(false);
   const [linkHelperText, setLinkHelperText] = useState("");
   const assignableStudents = useMemo(() => {
-    const fromAssignments = new Set(assignments[currentTeacher.id] ?? []);
+    const fromAssignments = new Set(teacherId ? assignments[teacherId] ?? [] : []);
     const fromSessions = new Set(
       sessions
-        .filter((row) => row.teacherId === currentTeacher.id)
+        .filter((row) => teacherId && row.teacherId === teacherId)
         .flatMap((row) => row.students)
     );
     const allowed = new Set([...fromAssignments, ...fromSessions]);
     // Fallback: if admin hasn't assigned yet, keep teacher usable by showing all learners.
     if (allowed.size === 0) return students;
     return students.filter((row) => allowed.has(row.id));
-  }, [assignments, sessions, students]);
+  }, [assignments, sessions, students, teacherId]);
 
   function toggleStudent(sid: string) {
     setStudentIds((prev) => (prev.includes(sid) ? prev.filter((x) => x !== sid) : [...prev, sid]));
   }
 
   async function handleGenerateMeetLink() {
+    if (supabase) {
+      setLinkHelperText("Google Meet links are provisioned after you save the session.");
+      return;
+    }
     setIsGeneratingLink(true);
     setLinkHelperText("");
     await new Promise((resolve) => setTimeout(resolve, 900));
@@ -145,6 +154,7 @@ export default function SessionForm() {
   }
 
   function handlePrimary() {
+    void (async () => {
     if (!title.trim()) {
       toast.error("Add a session title.");
       return;
@@ -162,6 +172,10 @@ export default function SessionForm() {
       toast.error("Select at least one learner.");
       return;
     }
+    if (!teacherId) {
+      toast.error("No active teacher session. Please sign in again.");
+      return;
+    }
     persistDraft();
     const payload = {
       title: title.trim(),
@@ -172,19 +186,51 @@ export default function SessionForm() {
       description: description.trim() || "Session details pending.",
       meetingLink: meetingLink.trim(),
       students: studentIds,
-      teacherId: currentTeacher.id,
-      teacherName: currentTeacher.name,
+      teacherId,
+      teacherName,
       status: session?.status ?? ("upcoming" as const),
     };
+    let savedSession = null;
     if (isEdit && id) {
-      updateSession(id, payload);
-      toast.success("Session updated (frontend local persistence).");
+      savedSession = await updateSession(id, payload);
+      toast.success("Session updated.");
     } else {
-      createSession(payload);
-      toast.success("Session created (frontend local persistence).");
+      savedSession = await createSession(payload);
+      toast.success("Session created.");
+      logEvent("teacher_session_created", { sessionId: savedSession.id });
+    }
+    if (supabase && auth.userId && savedSession) {
+      const startAt = new Date(`${savedSession.date}T${savedSession.time}:00Z`).toISOString();
+      let calendarEventId: string | undefined;
+      if (isEdit && id) {
+        const existingEvent = await supabase.from("sessions").select("calendar_event_id").eq("id", id).maybeSingle();
+        calendarEventId = (existingEvent.data?.calendar_event_id as string | null) ?? undefined;
+      }
+      const shouldProvisionMeet = !meetingLink.trim() || Boolean(calendarEventId);
+      if (shouldProvisionMeet) {
+      const provision = await supabase.functions.invoke("google-calendar-provision", {
+        body: {
+          action: "upsert",
+          sessionId: savedSession.id,
+          teacherId: auth.userId,
+          title: savedSession.title,
+          description: savedSession.description,
+          startAt,
+          durationMinutes: savedSession.duration,
+          calendarEventId,
+        },
+      });
+      if (provision.error) {
+        toast.error(`Meet provisioning failed: ${provision.error.message}`);
+      } else {
+        toast.success("Google Meet synced for this session.");
+      }
+      }
+      await loadSessions();
     }
     removeStoredKey(draftKey);
     navigate("/teacher/sessions");
+    })();
   }
 
   function handleCancel() {
@@ -259,7 +305,9 @@ export default function SessionForm() {
                   </>
                 )}
               </Button>
-              <span className="text-xs text-muted-foreground">Frontend prototype only (no Google API yet).</span>
+              <span className="text-xs text-muted-foreground">
+                Google-linked sessions generate and sync Meet links after save.
+              </span>
             </div>
             {linkHelperText ? <p className="text-xs text-emerald-700">{linkHelperText}</p> : null}
           </div>

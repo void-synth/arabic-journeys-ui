@@ -2,16 +2,25 @@ import { LogOut, Menu, Search, User } from "lucide-react";
 import { NotificationDropdown } from "./NotificationDropdown";
 import type { NotificationAudience } from "@/data/mock";
 import { Input } from "@/components/ui/input";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface NavbarProps {
   title: string;
   userName: string;
+  userAvatar?: string;
   onMenuToggle: () => void;
   notificationAudience: NotificationAudience;
   onLogout?: () => void;
 }
 
-export function Navbar({ title, userName, onMenuToggle, notificationAudience, onLogout }: NavbarProps) {
+export function Navbar({ title, userName, userAvatar, onMenuToggle, notificationAudience, onLogout }: NavbarProps) {
+  const initials = userName
+    .split(" ")
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase() ?? "")
+    .join("");
+
   return (
     <header className="sticky top-0 z-30 bg-background/70 backdrop-blur-xl supports-[backdrop-filter]:bg-background/55">
       <div className="mx-auto flex h-16 max-w-[1400px] items-center gap-4 px-4 lg:px-6">
@@ -43,9 +52,12 @@ export function Navbar({ title, userName, onMenuToggle, notificationAudience, on
         <div className="ml-auto flex items-center gap-2">
           <NotificationDropdown audience={notificationAudience} />
           <div className="flex items-center gap-2 rounded-[999px] border border-[hsl(160_25%_28%/0.14)] bg-[hsl(42_40%_99%/0.65)] px-2 py-1.5 shadow-[0_18px_55px_-44px_hsl(160_35%_18%/0.12)]">
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/15 ring-1 ring-[hsl(160_25%_28%/0.12)]">
-              <User className="h-4 w-4 text-primary" />
-            </div>
+            <Avatar className="h-8 w-8 ring-1 ring-[hsl(160_25%_28%/0.12)] bg-primary/10">
+              <AvatarImage src={userAvatar} alt={userName} />
+              <AvatarFallback className="bg-primary/15 text-primary text-xs font-semibold">
+                {initials || <User className="h-4 w-4 text-primary" />}
+              </AvatarFallback>
+            </Avatar>
             <span className="hidden max-w-[160px] truncate text-sm font-medium text-foreground sm:inline">{userName}</span>
             {onLogout ? (
               <button

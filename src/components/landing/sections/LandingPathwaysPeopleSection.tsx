@@ -17,7 +17,7 @@ export function LandingPathwaysPeopleSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-90px" }}
           transition={{ duration: 0.55, delay: 0.04 }}
-          className="space-y-10 lg:pr-6"
+          className="mx-auto w-full max-w-xl space-y-10 lg:mx-0 lg:max-w-none lg:pr-6"
         >
           <div className="space-y-5 text-base leading-relaxed text-foreground/70">
             <p>Different learners arrive for different reasons. The product should stay consistent and clear—without forcing one “type” of student voice.</p>
@@ -45,7 +45,7 @@ export function LandingPathwaysPeopleSection() {
           </div>
         </motion.div>
 
-        <div className="space-y-7">
+        <div className="mx-auto w-full max-w-xl space-y-7 lg:mx-0 lg:max-w-none">
           <motion.div
             initial={{ opacity: 0, y: 22 }}
             whileInView={{ opacity: 1, y: 0 }}
